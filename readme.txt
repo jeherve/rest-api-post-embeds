@@ -13,7 +13,15 @@ This plugin allows you to use the `jeherve_post_embed` shortcode to embed posts 
 
 When creating the shortcode, you can use any of the 20 shortcode parameters to make sure the embed will include the posts you want to display, and will look the way you want it to look.
 
-**Important:** Right now, you can only pull posts from sites using the [Jetpack](http://jetpack.me) plugin, with the JSON API module. In the future, I plan to add support for the [REST API](https://wordpress.org/plugins/rest-api/) plugin as well.
+**Important:** Right now, you can only pull posts from WordPress.com sites and sites using the [Jetpack](http://jetpack.me) plugin, with the JSON API module. In the future, I plan to add support for the [REST API](https://wordpress.org/plugins/rest-api/) plugin as well.
+
+**Questions, problems?**
+
+Take a look at the *Installation* and *FAQ* tabs here. If that doesn't help, [post in the support forums](http://wordpress.org/support/plugin/rest-api-post-embeds).
+
+**Want to contribute with a patch?**
+
+[Join me on GitHub!](https://github.com/jeherve/rest-api-post-embeds/)
 
 == Installation ==
 
@@ -28,7 +36,8 @@ The `jeherve_post_embed` shortcode includes 20 different parameters, listed belo
 
 * `url`:
 	* URl of the site from which you want to retrieve posts.
-	* **Important**: the site you'll pull posts from has to use the [Jetpack](http://jetpack.me) plugin, with the JSON API module.
+	* Accepts URLs (no need to specify the scheme).
+	* **Important**: the site you'll pull posts from has to be hosted on WordPress.com, or use the [Jetpack](http://jetpack.me) plugin with the JSON API module.
 	* Defaults to your own site.
 * `ignore_sticky_posts`:
 	* Default to `false`.
@@ -99,7 +108,6 @@ The `jeherve_post_embed` shortcode includes 20 different parameters, listed belo
 
 Yes, you can use the `do_shortcode` function to do so. You can read more about it [here](https://developer.wordpress.org/reference/functions/do_shortcode/).
 
-
 = I get the following error instead of my post list: `We cannot load blog data at this time`. =
 
 That means that Jetpack can't return a list of posts from that site.
@@ -107,6 +115,18 @@ That means that Jetpack can't return a list of posts from that site.
 * It could be because the site owner deactivated the JSON API module.
 
 If the site is yours, and if you can't figure out what's wrong, you'll need to contact the Jetpack support team for help. You can do so [via email](http://jetpack.me/contact-support/) or via [the Jetpack support forums here on WordPress.org](http://wordpress.org/support/plugin/jetpack).
+
+= Are there other ways for me to customize the post embed list? =
+
+Yes! The plugin includes quite a few filters you can use to customize the post list. You can [browse the plugin's source code](https://github.com/jeherve/rest-api-post-embeds/blob/master/rest-api-post-embeds.php) to find out more.
+
+* `jeherve_post_embed_blog_id` allows you to specify a custom blog ID or normalized Jetpack or WordPress.com site URL.
+* `jeherve_post_embed_base_api_url` allows you to specify another REST API URL where you'll get your posts from. It defaults to the WordPress.com REST API.
+* `jeherve_post_embed_query_url` allows you to change the final URL (including the options you've set in the shortcode parameters) used to query posts.
+* `jeherve_post_embed_post_list_before` allows you to insert content before the list of posts, inside the div.
+* `jeherve_post_embed_image_params` allows you to specify custom Photon parameters applied to the Featured Images. It accepts an array of parameters. The accepted paramters are available [here](https://developer.wordpress.com/docs/photon/).
+* `jeherve_post_embed_article_layout` allows you to filter the layout of a single article in the list.
+* `jeherve_post_embed_post_list_after` allows you to insert content after the list of posts, inside the div.
 
 == Changelog ==
 
