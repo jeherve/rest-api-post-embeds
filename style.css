@@ -1,0 +1,47 @@
+/*
+ * General styles
+ *********************************/
+
+.jeherve-post-embeds {
+	border: 1px solid #C3C3C3;
+	clear: both;
+	margin: 1em 0;
+	padding: 2em 1em;
+}
+
+.jeherve-post-embeds .post-embed-article {
+	border-bottom: 1px solid #C3C3C3;
+}
+
+.jeherve-post-embeds .post-embed-article h4.post-embed-post-title {
+	margin: 1em 0;
+}
+
+.jeherve-post-embeds .jeherve-post-embeds-credits {
+	color: #C3C3C3;
+	float: right;
+	font-size: 0.8em;
+	margin: 0.5em 0;
+}
+
+/*
+ * Grid
+ **********************************/
+
+.embed-grid .post-embed-article {
+	clear: left;
+}
+
+.embed-grid .post-embed-article {
+	float: left;
+	margin: 0 0 1em;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	padding-right: 20px;
+	width: 50%;
+}
+
+.embed-grid .post-embed-article .post-embed-post-thumbnail img {
+	width: 50%;
+}
