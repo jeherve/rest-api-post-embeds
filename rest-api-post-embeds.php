@@ -197,13 +197,13 @@ class Jeherve_Post_Embeds {
 		$data_from_cache = get_transient( 'jeherve_post_embed_' . $query_hash );
 		if ( false === $data_from_cache ) {
 			$response = wp_remote_get( esc_url_raw( $query_url ) );
-			//set_transient( 'jeherve_post_embed_' . $query_hash, $response, 10 * MINUTE_IN_SECONDS );
+			set_transient( 'jeherve_post_embed_' . $query_hash, $response, 10 * MINUTE_IN_SECONDS );
 		} else {
 			$response = $data_from_cache;
 		}
 
 		if ( is_wp_error( $response ) ) {
-			return '<p>' . __( 'Error in the response. We cannot load blog data at this time.', 'jeherve_post_embed' ) . '</p>';
+			return '<p>' . __( 'Error in the response. We cannot load blog data at this time. Make sure Jetpack is properly connected on the site.', 'jeherve_post_embed' ) . '</p>';
 		}
 
 		// Let's start working with our list of posts
