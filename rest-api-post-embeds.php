@@ -302,7 +302,7 @@ class Jeherve_Post_Embeds {
 					'<div class="post-embed-post-thumbnail"><a title="%1$s" href="%2$s"><img src="%3$s" alt="%1$s"/></a></div>',
 					esc_attr( $post_title ),
 					esc_url( $single_post->URL ),
-					apply_filters( 'jetpack_photon_url', $featured_image, $image_params )
+					apply_filters( 'jetpack_photon_url', $single_post->featured_image, $image_params )
 				);
 
 			}
