@@ -110,11 +110,7 @@ Yes, you can use the `do_shortcode` function to do so. You can read more about i
 
 = I get the following error instead of my post list: `We cannot load blog data at this time`. =
 
-That means that Jetpack can't return a list of posts from that site.
-* It could be because Jetpack isn't installed or connected properly on that site.
-* It could be because the site owner deactivated the JSON API module.
-
-If the site is yours, and if you can't figure out what's wrong, you'll need to contact the Jetpack support team for help. You can do so [via email](http://jetpack.me/contact-support/) or via [the Jetpack support forums here on WordPress.org](http://wordpress.org/support/plugin/jetpack).
+See the instructions [here](https://wordpress.org/support/topic/how-to-fix-error-in-the-response-we-cannot-load-blog-data-at-this-time).
 
 = Are there other ways for me to customize the post embed list? =
 
@@ -131,6 +127,6 @@ Yes! The plugin includes quite a few filters you can use to customize the post l
 == Changelog ==
 
 = 1.0 =
-Release Date: August 13, 2015
+Release Date: August 14, 2015
 
 * Initial release
