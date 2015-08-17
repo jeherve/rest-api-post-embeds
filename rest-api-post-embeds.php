@@ -32,7 +32,7 @@ class Jeherve_Post_Embeds {
 		add_filter(    'jeherve_post_embed_post_loop',      array( $this, 'opening_div' ), 1, 4 );
 		add_filter(    'jeherve_post_embed_post_loop',      array( $this, 'headline' ), 10, 4 );
 		add_filter(    'jeherve_post_embed_post_loop',      array( $this, 'wpcom_post_loop' ), 10, 4 );
-		add_filter(    'jeherve_post_embed_post_loop',      array( $this, 'wpapi_post_loop' ), 10, 4 );
+		add_filter(    'jeherve_post_embed_post_loop',      array( $this, 'wpapi_post_loop' ), 11, 4 );
 		add_filter(    'jeherve_post_embed_article_layout', array( $this, 'article_wrap' ), 10, 2 );
 		add_filter(    'jeherve_post_embed_post_loop',      array( $this, 'credits' ), 10, 4 );
 		add_filter(    'jeherve_post_embed_post_loop',      array( $this, 'closing_div' ), 99, 4 );
@@ -274,10 +274,11 @@ class Jeherve_Post_Embeds {
 			 */
 			$article = apply_filters( 'jeherve_post_embed_article_layout', $article, $single_post );
 
-			return $loop .= $article;
+			$loop .= $article;
 
 		} // End loop
 
+		return $loop;
 	}
 
 
@@ -294,6 +295,12 @@ class Jeherve_Post_Embeds {
 	 * @return string $str Post loop.
 	 */
 	public function wpapi_post_loop( $loop, $posts_info, $number_of_posts, $atts ) {
+
+		// Bail if the shortcode doesn't use the WP REST API
+		if ( 'false' === $atts['wpapi'] ) {
+			return $loop;
+		}
+
 		foreach ( array_slice( $posts_info, 0, $number_of_posts ) as $post ) {
 			$article = '';
 
@@ -328,8 +335,9 @@ class Jeherve_Post_Embeds {
 			/** This filter is documented above. */
 			$article = apply_filters( 'jeherve_post_embed_article_layout', $article, $post );
 
-			$loop = $loop . $article;
+			$loop .= $article;
 		}
+
 		return $loop;
 	}
 
@@ -433,6 +441,7 @@ class Jeherve_Post_Embeds {
 			return;
 		}
 
+		var_dump( $query_url );
 		// Look for data in our transient. If nothing, let's get a list of posts to display
 		$data_from_cache = get_transient( 'jeherve_post_embed_' . $query_hash );
 		if ( false === $data_from_cache ) {
@@ -799,11 +808,6 @@ class Jeherve_Post_Embeds {
 		$url = esc_url( $url );
 		$url = str_replace( array( 'http://', 'https://' ), '', $url );
 		$url = untrailingslashit( $url );
-
-		// Normalize www.
-		if ( 'www.' === substr( $url, 0, 4 ) ) {
-			$url = substr( $url, 4 );
-		}
 
 		return $url;
 	}
