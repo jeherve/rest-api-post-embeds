@@ -722,6 +722,7 @@ class Jeherve_Post_Embeds {
 		 * For WordPress.com things are extermely simple. Defaults to 'post', use 'any' to query for both posts and pages.
 		 * For the WP REST API, we have more options.
 		 * @see https://codex.wordpress.org/Class_Reference/WP_Query#Type_Parameters
+		 * The WP REST API doesn't seem to handle the 'page' option in post types, though. There is a different endpoint for pages.
 		 */
 		if ( $type ) {
 			if ( ! true === $atts['wpapi'] && 'any' == $type ) {
@@ -730,23 +731,8 @@ class Jeherve_Post_Embeds {
 
 			// Now let's handle WP REST API
 			if ( true === $atts['wpapi'] ) {
+				$args['post_type'] = $args['type'];
 				unset( $args['type'] );
-
-				// First, let's get an array of the post types we can use.
-				$post_types = array_values( get_post_types( array( 'public' => true ) ) );
-
-				// Then we'll build a new $validated_types array, based on the values we got from $type
-				$type = explode( ',', $type );
-				$validated_types = array();
-				foreach ( $type as $unvalidated ) {
-					if ( in_array( $unvalidated, $post_types ) ) {
-						$validated_types[] = $unvalidated;
-					}
-				}
-
-				if ( ! empty( $validated_types ) ) {
-						$args['post_type'] = $validated_types;
-				}
 			}
 		}
 
