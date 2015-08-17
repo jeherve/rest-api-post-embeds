@@ -660,16 +660,13 @@ class Jeherve_Post_Embeds {
 		/**
 		 * Date Queries.
 		 *
-		 * These are simple with the WordPress.com REST API, but a bit more complicated with the WP REST API.
-		 * @see https://codex.wordpress.org/Class_Reference/WP_Query#Date_Parameters
+		 * These are simple with the WordPress.com REST API, but are not yet available with the WP REST API.
+		 * @see https://github.com/WP-API/WP-API/issues/389
 		 */
 		// Return posts dated before the specified datetime.
 		if ( $before ) {
 			$args['before'] = $before;
 			if ( true === $atts['wpapi'] ) {
-				$args['date_query'] = array(
-					'before' => $before,
-				);
 				unset( $args['before'] );
 			}
 		}
@@ -678,12 +675,6 @@ class Jeherve_Post_Embeds {
 		if ( $after ) {
 			$args['after'] = $after;
 			if ( true === $atts['wpapi'] ) {
-				$after = array( 'after' => $after, );
-				if ( isset( $args['date_query'] ) && is_array( $args['date_query'] ) ) {
-					array_push( $args['date_query'], $after );
-				} else {
-					$args['date_query'] = $after;
-				}
 				unset( $args['after'] );
 			}
 		}
