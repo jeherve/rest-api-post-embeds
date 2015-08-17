@@ -531,7 +531,6 @@ class Jeherve_Post_Embeds {
 			'category'            => '',
 			'type'                => '',
 			'exclude'             => '',
-			'status'              => '',
 			'author'              => '',
 			'wrapper_class'       => '',
 			'url'                 => '',
@@ -555,7 +554,6 @@ class Jeherve_Post_Embeds {
 		$category            = sanitize_text_field( $atts['category'] );
 		$type                = sanitize_text_field( $atts['type'] );
 		$exclude             = $atts['exclude']; // Validated below.
-		$status              = $atts['status']; // Validated below.
 		$author              = intval( $atts['author'] );
 		$wrapper_class       = sanitize_html_class( $atts['wrapper_class'] );
 		$url                 = $atts['url']; // Validated below.
@@ -743,33 +741,6 @@ class Jeherve_Post_Embeds {
 			if ( true === $atts['wpapi'] ) {
 				$args['post__not_in'] = explode( ',', $args['exclude'] );
 				unset( $args['exclude'] );
-			}
-		}
-
-		/**
-		 * Sanitize and validate Post Status.
-		 *
-		 * Props @billerickson
-		 * @see https://plugins.trac.wordpress.org/browser/display-posts-shortcode/tags/2.4/display-posts-shortcode.php#L165
-		 */
-		if ( $status ) {
-			$status = explode( ',', $status );
-			$validated = array();
-			$available = array( 'publish', 'pending', 'draft', 'auto-draft', 'future', 'private', 'inherit', 'trash', 'any' );
-			foreach ( $status as $unvalidated ) {
-				if ( in_array( $unvalidated, $available ) ) {
-					$validated[] = $unvalidated;
-				}
-				if ( ! empty( $validated ) ) {
-					$args['status'] = $validated;
-				}
-			}
-			// And then rebuild a string from our array of validated statuses.
-			$args['status'] = implode( ',', $validated );
-
-			if ( true === $atts['wpapi'] ) {
-				$args['post_status'] = $validated;
-				unset( $args['status'] );
 			}
 		}
 
