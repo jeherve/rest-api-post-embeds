@@ -89,9 +89,6 @@ The `jeherve_post_embed` shortcode includes 20 different parameters, listed belo
 	* Excludes the specified post ID(s) from the response.
 	* Accepts a comma-separated list of Post IDs.
 	* Default to none.
-* `status`:
-	* Default to `publish`.
-	* Accepts the following values: `publish`, `pending`, `draft`, `auto-draft`, `future`, `private`, `inherit`, `trash`, `any`
 * `author`:
 	* Specify posts from a given author ID.
 	* Default to none.
