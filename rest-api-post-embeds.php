@@ -104,18 +104,10 @@ class Jeherve_Post_Embeds {
 			// Query the WP REST API (V2)
 			$url = sprintf( esc_url( '%s/wp-json/wp/v2/posts/' ), $blog_id );
 
-			// Array Keys (we'll modify those to match the WP REST API structure).
-			$wp_keys = array();
-
-			foreach ( array_keys( $args ) as $wp_key ) {
-				// Let's wrap each array key in filter[ $wp_key ]
-				$wp_key = 'filter[' . $wp_key . ']';
-				// Let's create a new array, $wp_keys, with our new array keys
-				array_push( $wp_keys, $wp_key );
+			foreach( $args as $arg => $value ) {
+				$args["filter[{$arg}]"] = $value;
+				unset($args[ $arg ] );
 			}
-
-			// Now we add the new keys to the existing array values to create our new array
-			$args = array_combine( $wp_keys, array_values( $args ) );
 
 		} else {
 			// Query the WordPress.com REST API URL.
