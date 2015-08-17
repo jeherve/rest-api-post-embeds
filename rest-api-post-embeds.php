@@ -723,8 +723,10 @@ class Jeherve_Post_Embeds {
 		 * The WP REST API doesn't seem to handle the 'page' option in post types, though. There is a different endpoint for pages.
 		 */
 		if ( $type ) {
-			if ( ! true === $atts['wpapi'] && 'any' == $type ) {
+			if ( 'any' == $type ) {
 				$args['type'] = 'any';
+			} else {
+				$args['type'] = 'post';
 			}
 
 			// Now let's handle WP REST API
