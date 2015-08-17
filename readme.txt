@@ -119,10 +119,9 @@ Yes! The plugin includes quite a few filters you can use to customize the post l
 * `jeherve_post_embed_blog_id` allows you to specify a custom blog ID or normalized Jetpack or WordPress.com site URL.
 * `jeherve_post_embed_base_api_url` allows you to specify another REST API URL where you'll get your posts from. It defaults to the WordPress.com REST API.
 * `jeherve_post_embed_query_url` allows you to change the final URL (including the options you've set in the shortcode parameters) used to query posts.
-* `jeherve_post_embed_post_list_before` allows you to insert content before the list of posts, inside the div.
+* `jeherve_post_embed_post_loop` allows you to build your own post loop from the data you get from the API.
 * `jeherve_post_embed_image_params` allows you to specify custom Photon parameters applied to the Featured Images. It accepts an array of parameters. The accepted paramters are available [here](https://developer.wordpress.com/docs/photon/).
 * `jeherve_post_embed_article_layout` allows you to filter the layout of a single article in the list.
-* `jeherve_post_embed_post_list_after` allows you to insert content after the list of posts, inside the div.
 
 == Changelog ==
 
