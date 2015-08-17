@@ -62,7 +62,7 @@ class Jeherve_Post_Embeds {
 		if ( $blog_id ) {
 			return absint( $blog_id );
 		} else {
-			return;
+			return home_url();
 		}
 
 	}
@@ -77,8 +77,6 @@ class Jeherve_Post_Embeds {
 	 */
 	public function build_query_URL( $url, $atts, $args ) {
 
-		$blog_id = '';
-
 		/**
 		 * Filter the blog ID used to query posts.
 		 * By default it's your own site's blog ID.
@@ -87,7 +85,7 @@ class Jeherve_Post_Embeds {
 		 *
 		 * @param string $blog_id Blog identifier. Can be a WordPress.com blog ID, or a normalized Jetpack / WordPress.com site URL (without protocol).
 		 */
-		$blog_id = apply_filters( 'jeherve_post_embed_blog_id', $blog_id );
+		$blog_id = apply_filters( 'jeherve_post_embed_blog_id', '' );
 
 		// Overwrite the blog ID if it was defined in the shortcode.
 		if ( $atts['url'] ) {
@@ -556,7 +554,7 @@ class Jeherve_Post_Embeds {
 		$exclude             = $atts['exclude']; // Validated below.
 		$author              = intval( $atts['author'] );
 		$wrapper_class       = sanitize_html_class( $atts['wrapper_class'] );
-		$url                 = $atts['url']; // Validated below.
+		$url                 = $this->jeherve_post_embed_clean_url( $atts['url'] );
 		$headline            = sanitize_text_field( $atts['headline'] );
 		$wpapi               = $this->jeherve_post_embed_convert_string_bool( $atts['wpapi'] );
 
@@ -758,16 +756,6 @@ class Jeherve_Post_Embeds {
 
 		// Clean up URL.
 		if ( $url ) {
-			$url = esc_url( $url );
-			$url = str_replace( array( 'http://', 'https://' ), '', $url );
-			$url = untrailingslashit( $url );
-
-			// Normalize www.
-			if ( 'www.' === substr( $url, 0, 4 ) ) {
-				$url = substr( $url, 4 );
-			}
-
-			// And add the clean URL to the array of shortcode attributes.
 			$atts['url'] = $url;
 		}
 
@@ -801,6 +789,28 @@ class Jeherve_Post_Embeds {
 		} else {
 			return;
 		}
+	}
+
+	/**
+	 * Clean up URL
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param string $url Site URL.
+	 *
+	 * @return string $url Clean URL. No scheme, no www.
+	 */
+	public static function jeherve_post_embed_clean_url( $url ) {
+		$url = esc_url( $url );
+		$url = str_replace( array( 'http://', 'https://' ), '', $url );
+		$url = untrailingslashit( $url );
+
+		// Normalize www.
+		if ( 'www.' === substr( $url, 0, 4 ) ) {
+			$url = substr( $url, 4 );
+		}
+
+		return $url;
 	}
 
 }
