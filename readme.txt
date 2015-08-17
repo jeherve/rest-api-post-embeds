@@ -14,6 +14,7 @@ This plugin allows you to use the `jeherve_post_embed` shortcode to embed posts 
 When creating the shortcode, you can use any of the 20 shortcode parameters to make sure the embed will include the posts you want to display, and will look the way you want it to look.
 
 **Important:** You can only pull posts from 3 different types of sites:
+
 * WordPress.com sites.
 * Sites using the [Jetpack](http://jetpack.me) plugin, with the JSON API module.
 * Sites using the [REST API](https://wordpress.org/plugins/rest-api/) plugin, by adding `wpapi="true"` to your shortcode parameters.
@@ -42,6 +43,9 @@ The `jeherve_post_embed` shortcode includes different parameters, listed below:
 	* Accepts URLs (no need to specify the scheme).
 	* **Important**: If you use the default method to get posts, the site you'll pull posts from has to be hosted on WordPress.com, or use the [Jetpack](http://jetpack.me) plugin with the JSON API module. If you use the WP REST API, the site has to use the [WP REST API](https://wordpress.org/plugins/rest-api/) plugin, version 2 or above.
 	* Defaults to your own site.
+* `wpapi`:
+	* Default to `false`.
+	* Set to `true` to retrieve posts from a site using the WP REST API plugin.
 * `ignore_sticky_posts`:
 	* Default to `false`.
 	* Use `true` or `false` to decide whether you want the embedded post list to include sticky posts.
