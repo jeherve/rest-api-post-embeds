@@ -1,7 +1,7 @@
 === REST API Post Embeds ===
 Contributors: jeherve
-Tags: shortcode, embed, posts, jetpack, api
-Stable tag: 1.0
+Tags: shortcode, embed, posts, jetpack, api, wp api, rest api
+Stable tag: 1.1
 Requires at least: 4.3
 Tested up to: 4.3
 
@@ -13,7 +13,10 @@ This plugin allows you to use the `jeherve_post_embed` shortcode to embed posts 
 
 When creating the shortcode, you can use any of the 20 shortcode parameters to make sure the embed will include the posts you want to display, and will look the way you want it to look.
 
-**Important:** Right now, you can only pull posts from WordPress.com sites and sites using the [Jetpack](http://jetpack.me) plugin, with the JSON API module. In the future, I plan to add support for the [REST API](https://wordpress.org/plugins/rest-api/) plugin as well.
+**Important:** You can only pull posts from 3 different types of sites:
+* WordPress.com sites.
+* Sites using the [Jetpack](http://jetpack.me) plugin, with the JSON API module.
+* Sites using the [REST API](https://wordpress.org/plugins/rest-api/) plugin, by adding `wpapi="true"` to your shortcode parameters.
 
 **Questions, problems?**
 
@@ -27,17 +30,17 @@ Take a look at the *Installation* and *FAQ* tabs here. If that doesn't help, [po
 
 1. Install the plugin either via the WordPress.org plugin directory, or by uploading the files to your server.
 2. Edit the post or page where you want to embed posts.
-3. Add the `jeherve_post_embed` shortcde.
+3. Add the `jeherve_post_embed` shortcode.
 4. Boom! Done.
 
 = Shortcode parameters =
 
-The `jeherve_post_embed` shortcode includes 20 different parameters, listed below:
+The `jeherve_post_embed` shortcode includes different parameters, listed below:
 
 * `url`:
 	* URl of the site from which you want to retrieve posts.
 	* Accepts URLs (no need to specify the scheme).
-	* **Important**: the site you'll pull posts from has to be hosted on WordPress.com, or use the [Jetpack](http://jetpack.me) plugin with the JSON API module.
+	* **Important**: If you use the default method to get posts, the site you'll pull posts from has to be hosted on WordPress.com, or use the [Jetpack](http://jetpack.me) plugin with the JSON API module. If you use the WP REST API, the site has to use the [WP REST API](https://wordpress.org/plugins/rest-api/) plugin, version 2 or above.
 	* Defaults to your own site.
 * `ignore_sticky_posts`:
 	* Default to `false`.
@@ -45,6 +48,7 @@ The `jeherve_post_embed` shortcode includes 20 different parameters, listed belo
 * `include_images`:
 	* Default to `true`.
 	* When set to `true`, if the posts include a [Featured Image](https://codex.wordpress.org/Post_Thumbnails), it will be displayed above the post.
+	* Not available when using the WP REST API.
 * `include_excerpt`:
 	* Default to `true`.
 	* Includes an excerpt if it exists.
@@ -60,6 +64,7 @@ The `jeherve_post_embed` shortcode includes 20 different parameters, listed belo
 	* For that option to work, you'll need to use Jetpack on your site, as well as the [Photon module](http://jetpack.me/support/photon/).
 	* Option should follow this format: `width,height`, `width` and `height` being the value in pixels.
 	* By default, the images will be as wide as your theme's `$content_width` value ([reference](https://codex.wordpress.org/Content_Width)).
+	* Not available when using the WP REST API.
 * `order`:
 	* Order in which the posts are displayed, desc or asc.
 	* Default to `DESC`.
@@ -73,9 +78,11 @@ The `jeherve_post_embed` shortcode includes 20 different parameters, listed belo
 * `before`:
 	* Only return posts dated before the specified date.
 	* Default to none.
+	* Not available when using the WP REST API.
 * `after`:
 	* Only return posts dated after the specified date.
 	* Default to none.
+	* Not available when using the WP REST API.
 * `tag`:
 	* Only return posts belonging to a specific tag name or slug.
 	* Default to none.
@@ -89,6 +96,7 @@ The `jeherve_post_embed` shortcode includes 20 different parameters, listed belo
 	* Excludes the specified post ID(s) from the response.
 	* Accepts a comma-separated list of Post IDs.
 	* Default to none.
+	* Not available when using the WP REST API.
 * `author`:
 	* Specify posts from a given author ID.
 	* Default to none.
@@ -117,10 +125,16 @@ Yes! The plugin includes quite a few filters you can use to customize the post l
 * `jeherve_post_embed_base_api_url` allows you to specify another REST API URL where you'll get your posts from. It defaults to the WordPress.com REST API.
 * `jeherve_post_embed_query_url` allows you to change the final URL (including the options you've set in the shortcode parameters) used to query posts.
 * `jeherve_post_embed_post_loop` allows you to build your own post loop from the data you get from the API.
-* `jeherve_post_embed_image_params` allows you to specify custom Photon parameters applied to the Featured Images. It accepts an array of parameters. The accepted paramters are available [here](https://developer.wordpress.com/docs/photon/).
+* `jeherve_post_embed_image_params` allows you to specify custom Photon parameters applied to the Featured Images. It accepts an array of parameters. The accepted parameters are available [here](https://developer.wordpress.com/docs/photon/).
 * `jeherve_post_embed_article_layout` allows you to filter the layout of a single article in the list.
 
 == Changelog ==
+
+= 1.1 =
+Releast Date: August 17, 2015
+
+* Add support for the WP REST API, thanks to the new `wpapi` shortcode parameter.
+* Refactor the plugin organization to make it easier to customize for third-party plugin developers.
 
 = 1.0 =
 Release Date: August 14, 2015
