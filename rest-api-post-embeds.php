@@ -738,8 +738,12 @@ class Jeherve_Post_Embeds {
 		if ( $exclude ) {
 			// make sure we have a comma separated list of integers.
 			$args['exclude'] = implode( ',', array_map( 'absint', explode( ',', $exclude ) ) );
+			/** `post__not_in` is only available in authenticated requests as it's marked as private in WordPress.
+			 * We consequently can't use it here.
+			 * @see https://github.com/WP-API/WP-API/issues/1357
+			 */
 			if ( true === $atts['wpapi'] ) {
-				$args['post__not_in'] = explode( ',', $args['exclude'] );
+				//$args['post__not_in'] = explode( ',', $args['exclude'] );
 				unset( $args['exclude'] );
 			}
 		}
