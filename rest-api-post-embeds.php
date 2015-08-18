@@ -200,12 +200,14 @@ class Jeherve_Post_Embeds {
 			$article = '';
 
 			// Title
-			$post_title = ( $single_post->title ) ? $single_post->title : __( ' ( No Title ) ', 'jeherve_post_embed' );
-			$article .= sprintf(
-				'<h4 class="post-embed-post-title"><a href="%1$s">%2$s</a></h4>',
-				esc_url( $single_post->URL ),
-				esc_html( $post_title )
-			);
+			if ( true === $atts['include_title'] ) {
+				$post_title = ( $single_post->title ) ? $single_post->title : __( ' ( No Title ) ', 'jeherve_post_embed' );
+				$article .= sprintf(
+					'<h4 class="post-embed-post-title"><a href="%1$s">%2$s</a></h4>',
+					esc_url( $single_post->URL ),
+					esc_html( $post_title )
+				);
+			}
 
 			// Featured Image
 			if (
@@ -305,12 +307,14 @@ class Jeherve_Post_Embeds {
 			$article = '';
 
 			// Title
-			$post_title = ( $post->title->rendered ) ? $post->title->rendered : __( ' ( No Title ) ', 'jeherve_post_embed' );
-			$article .= sprintf(
-				'<h4 class="post-embed-post-title"><a href="%1$s">%2$s</a></h4>',
-				esc_url( $post->link ),
-				esc_html( $post_title )
-			);
+			if ( true === $atts['include_title'] ) {
+				$post_title = ( $post->title->rendered ) ? $post->title->rendered : __( ' ( No Title ) ', 'jeherve_post_embed' );
+				$article .= sprintf(
+					'<h4 class="post-embed-post-title"><a href="%1$s">%2$s</a></h4>',
+					esc_url( $post->link ),
+					esc_html( $post_title )
+				);
+			}
 
 			// Excerpt.
 			if ( true === $atts['include_excerpt'] &&
@@ -525,6 +529,7 @@ class Jeherve_Post_Embeds {
 		$atts = shortcode_atts( array(
 			'ignore_sticky_posts' => false,
 			'include_images'      => true,
+			'include_title'       => true,
 			'include_excerpt'     => true,
 			'include_content'     => false,
 			'include_credits'     => true,
@@ -548,6 +553,7 @@ class Jeherve_Post_Embeds {
 		// Sanitize every attribute
 		$ignore_sticky_posts = $this->jeherve_post_embed_convert_string_bool( $atts['ignore_sticky_posts'] );
 		$include_images      = $this->jeherve_post_embed_convert_string_bool( $atts['include_images'] );
+		$include_title       = $this->jeherve_post_embed_convert_string_bool( $atts['include_title'] );
 		$include_excerpt     = $this->jeherve_post_embed_convert_string_bool( $atts['include_excerpt'] );
 		$include_content     = $this->jeherve_post_embed_convert_string_bool( $atts['include_content'] );
 		$include_credits     = $this->jeherve_post_embed_convert_string_bool( $atts['include_credits'] );
@@ -586,6 +592,11 @@ class Jeherve_Post_Embeds {
 		// Should we include images?
 		if ( $include_images ) {
 			$atts['include_images'] = true;
+		}
+
+		// Should we include titles?
+		if ( $include_title ) {
+			$atts['include_title'] = true;
 		}
 
 		// Should we include excerpts?

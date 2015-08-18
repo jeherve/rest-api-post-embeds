@@ -53,6 +53,9 @@ The `jeherve_post_embed` shortcode includes different parameters, listed below:
 	* Default to `true`.
 	* When set to `true`, if the posts include a [Featured Image](https://codex.wordpress.org/Post_Thumbnails), it will be displayed above the post.
 	* Not available when using the WP REST API.
+* `include_title`:
+	* Default to `true`.
+	* Includes the post title.
 * `include_excerpt`:
 	* Default to `true`.
 	* Includes an excerpt if it exists.
