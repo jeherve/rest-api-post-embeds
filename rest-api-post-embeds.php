@@ -4,7 +4,7 @@
  * Plugin URI: http://wordpress.org/plugins/rest-api-post-embeds
  * Description: Embed posts from your site or others' into your posts and pages.
  * Author: Jeremy Herve
- * Version: 1.1
+ * Version: 1.2
  * Author URI: http://jeremy.hu
  * License: GPL2+
  * Textdomain: jeherve_post_embed
@@ -30,11 +30,12 @@ class Jeherve_Post_Embeds {
 
 		// Output embed
 		add_filter(    'jeherve_post_embed_post_loop',      array( $this, 'opening_div' ), 1, 4 );
-		add_filter(    'jeherve_post_embed_post_loop',      array( $this, 'headline' ), 10, 4 );
+		add_filter(    'jeherve_post_embed_post_loop',      array( $this, 'headline' ), 2, 4 );
 		add_filter(    'jeherve_post_embed_post_loop',      array( $this, 'wpcom_post_loop' ), 10, 4 );
 		add_filter(    'jeherve_post_embed_post_loop',      array( $this, 'wpapi_post_loop' ), 11, 4 );
+		add_filter(    'jeherve_post_embed_featured_image', array( $this, 'photonized_resized_featured_image_url' ), 10, 2 );
 		add_filter(    'jeherve_post_embed_article_layout', array( $this, 'article_wrap' ), 10, 2 );
-		add_filter(    'jeherve_post_embed_post_loop',      array( $this, 'credits' ), 10, 4 );
+		add_filter(    'jeherve_post_embed_post_loop',      array( $this, 'credits' ), 98, 4 );
 		add_filter(    'jeherve_post_embed_post_loop',      array( $this, 'closing_div' ), 99, 4 );
 
 		add_action(    'wp_enqueue_scripts',                array( $this, 'enqueue_assets' ) );
@@ -104,7 +105,7 @@ class Jeherve_Post_Embeds {
 
 			foreach( $args as $arg => $value ) {
 				$args["filter[{$arg}]"] = $value;
-				unset($args[ $arg ] );
+				unset( $args[ $arg ] );
 			}
 
 		} else {
@@ -121,7 +122,7 @@ class Jeherve_Post_Embeds {
 		 * @since 1.0.0
 		 *
 		 * @param string $base_url Base API query URL.
-		 * @param array $args Array of query arguments.
+		 * @param array  $args     Array of query arguments.
 		 */
 		$base_url = apply_filters( 'jeherve_post_embed_base_api_url', $base_url, $args );
 
@@ -135,12 +136,12 @@ class Jeherve_Post_Embeds {
 	 *
 	 * @since 1.1.0
 	 *
-	 * @param string $loop Post loop.
-	 * @param array $posts_info Array of data about our posts.
-	 * @param int $number_of_posts Number of posts we want to display.
-	 * @param array $atts Array of shortcode attributes.
+	 * @param string  $loop            Post loop.
+	 * @param array   $posts_info      Array of data about our posts.
+	 * @param int     $number_of_posts Number of posts we want to display.
+	 * @param array   $atts            Array of shortcode attributes.
 	 *
-	 * @return string $var HTML code to prepend to the post embed list.
+	 * @return string $var             HTML code to prepend to the post embed list.
 	 */
 	public function opening_div( $loop, $posts_info, $number_of_posts, $atts ) {
 		$class = ( $atts['wrapper_class'] ) ? $atts['wrapper_class'] : '';
@@ -156,12 +157,12 @@ class Jeherve_Post_Embeds {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $loop Post loop.
-	 * @param array $posts_info Array of data about our posts.
-	 * @param int $number_of_posts Number of posts we want to display.
-	 * @param array $atts Array of shortcode attributes.
+	 * @param string  $loop            Post loop.
+	 * @param array   $posts_info      Array of data about our posts.
+	 * @param int     $number_of_posts Number of posts we want to display.
+	 * @param array   $atts            Array of shortcode attributes.
 	 *
-	 * @return string $var HTML code to prepend to the post embed list.
+	 * @return string $var             HTML code to prepend to the post embed list.
 	 */
 	public function headline( $loop, $posts_info, $number_of_posts, $atts ) {
 		if ( isset( $atts['headline'] ) && ! empty( $atts['headline'] ) ) {
@@ -180,12 +181,12 @@ class Jeherve_Post_Embeds {
 	 *
 	 * @since 1.1.0
 	 *
-	 * @param string $loop Post loop.
-	 * @param array $posts_info Array of data about our posts.
-	 * @param int $number_of_posts Number of posts we want to display.
-	 * @param array $atts Array of shortcode attributes.
+	 * @param string  $loop            Post loop.
+	 * @param array   $posts_info      Array of data about our posts.
+	 * @param int     $number_of_posts Number of posts we want to display.
+	 * @param array   $atts            Array of shortcode attributes.
 	 *
-	 * @return string $loop Post loop.
+	 * @return string $loop            Post loop.
 	 */
 	public function wpcom_post_loop( $loop, $posts_info, $number_of_posts, $atts ) {
 
@@ -200,8 +201,8 @@ class Jeherve_Post_Embeds {
 			$article = '';
 
 			// Title
+			$post_title = ( $single_post->title ) ? $single_post->title : __( ' ( No Title ) ', 'jeherve_post_embed' );
 			if ( true === $atts['include_title'] ) {
-				$post_title = ( $single_post->title ) ? $single_post->title : __( ' ( No Title ) ', 'jeherve_post_embed' );
 				$article .= sprintf(
 					'<h4 class="post-embed-post-title"><a href="%1$s">%2$s</a></h4>',
 					esc_url( $single_post->URL ),
@@ -212,55 +213,44 @@ class Jeherve_Post_Embeds {
 			// Featured Image
 			if (
 				isset( $atts['include_images'] ) &&
-				( isset( $single_post->featured_image ) && ! empty ( $single_post->featured_image ) )
+				( isset( $single_post->featured_image ) && ! empty( $single_post->featured_image ) )
 			) {
-
-				// Let's get the theme's content_width and use that as max image width unless specified otherwise via the filter.
-				global $content_width;
-				if ( isset( $content_width ) ) {
-					$image_params = array( 'w' => $content_width );
-				}
-
-				// If we have image size data from the shortcode, let's use it.
-				if ( isset( $atts['image_size'] ) ) {
-					$image_params = array( 'resize' => $atts['image_size'] );
-				}
-
-				/**
-				 * Allows setting up custom Photon parameters to manipulate the image output in the Display Posts widget.
-				 *
-				 * @see https://developer.wordpress.com/docs/photon/
-				 *
-				 * @since 1.0.0
-				 *
-				 * @param array $image_params Array of Photon Parameters.
-				 */
-				$image_params = apply_filters( 'jeherve_post_embed_image_params', $image_params );
 
 				$article .= sprintf(
 					'<div class="post-embed-post-thumbnail"><a title="%1$s" href="%2$s"><img src="%3$s" alt="%1$s"/></a></div>',
 					esc_attr( $post_title ),
 					esc_url( $single_post->URL ),
-					apply_filters( 'jetpack_photon_url', $single_post->featured_image, $image_params )
+					/**
+					 * Modify our Featured Image URL.
+					 * Uses Jetpack's Photon module to resize the image.
+					 *
+					 * @since 1.2.0
+					 *
+					 * @param string $featured_image_url Featured Image URL.
+					 * @param array  $atts               Shortcode attributes.
+					 */
+					apply_filters( 'jeherve_post_embed_featured_image', esc_url( $single_post->featured_image ), $atts )
 				);
 
 			}
 
 			// Excerpt.
-			if ( true === $atts['include_excerpt'] &&
+			if (
+				true === $atts['include_excerpt'] &&
 				( isset( $single_post->excerpt ) && ! empty( $single_post->excerpt ) )
 			) {
-				$article .= sprintf (
+				$article .= sprintf(
 					'<div class="post-embed-post-excerpt">%s</div>',
 					$single_post->excerpt
 				);
 			}
 
 			// Full post content.
-			if ( true === $atts['include_content'] &&
-			( isset( $single_post->content ) && ! empty( $single_post->content ) )
+			if (
+				true === $atts['include_content'] &&
+				( isset( $single_post->content ) && ! empty( $single_post->content ) )
 			) {
-				$article .= sprintf (
+				$article .= sprintf(
 					'<div class="post-embed-post-content">%s</div>',
 					$single_post->content
 				);
@@ -271,8 +261,8 @@ class Jeherve_Post_Embeds {
 			 *
 			 * @since 1.0.0
 			 *
-			 * @param string $article Article layout.
-			 * @param array $single_post Array of information about the post.
+			 * @param string $article     Article layout.
+			 * @param array  $single_post Array of information about the post.
 			 */
 			$article = apply_filters( 'jeherve_post_embed_article_layout', $article, $single_post );
 
@@ -289,12 +279,12 @@ class Jeherve_Post_Embeds {
 	 *
 	 * @since 1.1.0
 	 *
-	 * @param string $loop Post loop.
-	 * @param array $posts_info Array of data about our posts.
-	 * @param int $number_of_posts Number of posts we want to display.
-	 * @param array $atts Array of shortcode attributes.
+	 * @param string  $loop            Post loop.
+	 * @param array   $posts_info      Array of data about our posts.
+	 * @param int     $number_of_posts Number of posts we want to display.
+	 * @param array   $atts            Array of shortcode attributes.
 	 *
-	 * @return string $str Post loop.
+	 * @return string $str             Post loop.
 	 */
 	public function wpapi_post_loop( $loop, $posts_info, $number_of_posts, $atts ) {
 
@@ -307,8 +297,8 @@ class Jeherve_Post_Embeds {
 			$article = '';
 
 			// Title
+			$post_title = ( $post->title->rendered ) ? $post->title->rendered : __( ' ( No Title ) ', 'jeherve_post_embed' );
 			if ( true === $atts['include_title'] ) {
-				$post_title = ( $post->title->rendered ) ? $post->title->rendered : __( ' ( No Title ) ', 'jeherve_post_embed' );
 				$article .= sprintf(
 					'<h4 class="post-embed-post-title"><a href="%1$s">%2$s</a></h4>',
 					esc_url( $post->link ),
@@ -316,21 +306,44 @@ class Jeherve_Post_Embeds {
 				);
 			}
 
+			// Featured Image
+			if (
+				isset( $atts['include_images'] ) &&
+				( isset( $post->featured_image ) && ! empty( $post->featured_image ) )
+			) {
+				// Get the Featured Image URL from the Featured Image ID.
+				$featured_image_url = $this->get_wpapi_featured_image( $post->featured_image, $atts );
+
+				if ( empty( $featured_image_url ) ) {
+					continue;
+				}
+
+				$article .= sprintf(
+					'<div class="post-embed-post-thumbnail"><a title="%1$s" href="%2$s"><img src="%3$s" alt="%1$s"/></a></div>',
+					esc_attr( $post_title ),
+					esc_url( $post->link ),
+					/** This filter is documented in rest-api-post-embeds.php */
+					apply_filters( 'jeherve_post_embed_featured_image', esc_url( $featured_image_url ), $atts )
+				);
+			}
+
 			// Excerpt.
-			if ( true === $atts['include_excerpt'] &&
+			if (
+				true === $atts['include_excerpt'] &&
 				( isset( $post->excerpt->rendered ) && ! empty( $post->excerpt->rendered ) )
 			) {
-				$article .= sprintf (
+				$article .= sprintf(
 					'<div class="post-embed-post-excerpt">%s</div>',
 					$post->excerpt->rendered
 				);
 			}
 
 			// Full post content.
-			if ( true === $atts['include_content'] &&
+			if (
+				true === $atts['include_content'] &&
 				( isset( $post->content->rendered ) && ! empty( $post->content->rendered ) )
 			) {
-				$article .= sprintf (
+				$article .= sprintf(
 					'<div class="post-embed-post-content">%s</div>',
 					$post->content->rendered
 				);
@@ -351,10 +364,10 @@ class Jeherve_Post_Embeds {
 	 *
 	 * @since 1.1.0
 	 *
-	 * @param string $article Article layout.
-	 * @param array $single_post Array of information about the post.
+	 * @param string  $article     Article layout.
+	 * @param array   $single_post Array of information about the post.
 	 *
-	 * @return string $article Article layout.
+	 * @return string $article     Article layout.
 	 */
 	public function article_wrap( $article, $single_post ) {
 		$article = sprintf(
@@ -370,12 +383,12 @@ class Jeherve_Post_Embeds {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $loop Post loop.
-	 * @param array $posts_info Array of data about our posts.
-	 * @param int $number_of_posts Number of posts we want to display.
-	 * @param array $atts Array of shortcode attributes.
+	 * @param string  $loop            Post loop.
+	 * @param array   $posts_info      Array of data about our posts.
+	 * @param int     $number_of_posts Number of posts we want to display.
+	 * @param array   $atts            Array of shortcode attributes.
 	 *
-	 * @return string $str Credits HTML output.
+	 * @return string $str             Credits HTML output.
 	 */
 	public function credits( $loop, $posts_info, $number_of_posts, $atts ) {
 		if ( true === $atts['include_credits'] || isset( $atts['url'] ) ) {
@@ -396,12 +409,12 @@ class Jeherve_Post_Embeds {
 	 *
 	 * @since 1.1.0
 	 *
-	 * @param string $loop Post loop.
-	 * @param array $posts_info Array of data about our posts.
-	 * @param int $number_of_posts Number of posts we want to display.
-	 * @param array $atts Array of shortcode attributes.
+	 * @param string  $loop            Post loop.
+	 * @param array   $posts_info      Array of data about our posts.
+	 * @param int     $number_of_posts Number of posts we want to display.
+	 * @param array   $atts            Array of shortcode attributes.
 	 *
-	 * @return string $str Closing div HTML output.
+	 * @return string $str             Closing div HTML output.
 	 */
 	public function closing_div( $loop, $posts_info, $number_of_posts, $atts ) {
 		$closing = "\n" . '</div>' . "\n";
@@ -415,8 +428,8 @@ class Jeherve_Post_Embeds {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param array $atts Array of shortcode attributes.
-	 * @param array $args Array of query arguments.
+	 * @param array   $atts        Array of shortcode attributes.
+	 * @param array   $args        Array of query arguments.
 	 *
 	 * @return string post_list()
 	 */
@@ -432,9 +445,9 @@ class Jeherve_Post_Embeds {
 		 *
 		 * @since 1.0.0
 		 *
-		 * @param string $url URL querying an API to get a list of posts in a JSON format.
-		 * @param array $atts Array of shortcode attributes.
-		 * @param array $args Array of query arguments.
+		 * @param string $url  URL querying an API to get a list of posts in a JSON format.
+		 * @param array  $atts Array of shortcode attributes.
+		 * @param array  $args Array of query arguments.
 		 */
 		$query_url = apply_filters( 'jeherve_post_embed_query_url', '', $atts, $args );
 
@@ -445,36 +458,32 @@ class Jeherve_Post_Embeds {
 			return;
 		}
 
-		var_dump( $query_url );
 		// Look for data in our transient. If nothing, let's get a list of posts to display
 		$data_from_cache = get_transient( 'jeherve_post_embed_' . $query_hash );
 		if ( false === $data_from_cache ) {
 			$response = wp_remote_get( esc_url_raw( $query_url ) );
-			set_transient( 'jeherve_post_embed_' . $query_hash, $response, 10 * MINUTE_IN_SECONDS );
-		} else {
-			$response = $data_from_cache;
-		}
 
-		if ( is_wp_error( $response ) ) {
-			return '<p>' . __( 'Error in the response. We cannot load blog data at this time.', 'jeherve_post_embed' ) . '</p>';
-		}
-
-		// Let's start working with our list of posts
-		if ( true === $atts['wpapi'] ) {
-			$posts_info_body = wp_remote_retrieve_body( $response );
-
-			if ( ! is_wp_error( $posts_info_body )  ) {
-				$posts_info = json_decode( $posts_info_body );
-			} else {
-				return '<p>' . __( 'Error in the response we got from the WP REST API on the site.', 'jeherve_post_embed' ) . '</p>';
+			if ( is_wp_error( $response ) || empty( $response ) ) {
+				return '<p>' . __( 'Error in the response. We cannot load blog data at this time.', 'jeherve_post_embed' ) . '</p>';
 			}
-		} else {
-			$posts_info = json_decode( $response['body'] );
+
+			$posts_data = wp_remote_retrieve_body( $response );
+
+			if ( is_wp_error( $posts_data ) || empty( $posts_data ) ) {
+				return '<p>' . __( 'Error in the data received from the site. We cannot load blog data at this time.', 'jeherve_post_embed' ) . '</p>';
+			}
+
+			$posts_info = json_decode( $posts_data );
 
 			// If we get an error in that response, let's give up now
 			if ( isset( $posts_info->error ) && 'jetpack_error' == $posts_info->error ) {
 				return '<p>' . __( 'Error in the posts being returned. We cannot load blog data at this time.', 'jeherve_post_embed' ) . '</p>';
+			} else {
+				set_transient( 'jeherve_post_embed_' . $query_hash, $posts_info, 10 * MINUTE_IN_SECONDS );
 			}
+
+		} else {
+			$posts_info = $data_from_cache;
 		}
 
 		/**
@@ -496,15 +505,119 @@ class Jeherve_Post_Embeds {
 
 
 	/**
+	 * Get Featured Image from the WP REST API.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param int     $featured_id  Featured Image ID.
+	 * @param array   $atts         Shortcode attributes.
+	 *
+	 * @return string $featured_url Featured Image URL.
+	 */
+	public function get_wpapi_featured_image( $featured_id, $atts ) {
+		if ( ! $atts || ! $featured_id ) {
+			return;
+		}
+
+		/** This filter is documented in rest-api-post-embeds.php */
+		$blog_id = apply_filters( 'jeherve_post_embed_blog_id', '' );
+
+		// Overwrite the blog ID if it was defined in the shortcode.
+		if ( $atts['url'] ) {
+			$blog_id = urlencode( $atts['url'] );
+		}
+
+		// If no post ID, let's stop right there
+		if ( ! $blog_id ) {
+			return;
+		}
+
+		$featured_query_url = sprintf(
+			esc_url( '%1$s/wp-json/wp/v2/media/%2$s/' ),
+			$blog_id,
+			$featured_id
+		);
+
+		// Build a hash of the query URL. We'll use it later when building the transient.
+		if ( $featured_query_url ) {
+			$featured_query_hash = substr( md5( $featured_query_url ), 0, 21 );
+		} else {
+			return;
+		}
+
+		// Look for data in our transient. If nothing, let's get a list of posts to display
+		$cached_featured = get_transient( 'jeherve_post_embed_featured_' . $featured_id . '_' . $featured_query_hash );
+		if ( false === $cached_featured ) {
+			$featured_response = wp_remote_retrieve_body(
+				wp_remote_get( esc_url_raw( $featured_query_url ) )
+			);
+			set_transient( 'jeherve_post_embed_' . $featured_id . '_' . $featured_query_hash, $featured_response, 10 * HOUR_IN_SECONDS );
+		} else {
+			$featured_response = $cached_featured;
+		}
+
+		if ( ! is_wp_error( $featured_response )  ) {
+			$featured_info = json_decode( $featured_response, true );
+			$featured_url = $featured_info['guid']['rendered'];
+		} else {
+			return;
+		}
+
+		return $featured_url;
+	}
+
+
+	/**
+	 * Modify our Featured Image URL.
+	 * The image goes through Photon if Jetpack is active, and is resized if parameters are available.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param string  $featured_image_url Featured Image URL.
+	 * @param array   $atts               Shortcode attributes.
+	 *
+	 * @return string $featured_image_url Modified Featured Image URL.
+	 */
+	public function photonized_resized_featured_image_url( $featured_image_url, $atts ) {
+
+		$image_params = array();
+
+		// Let's get the theme's content_width and use that as max image width unless specified otherwise via the filter.
+		global $content_width;
+		if ( isset( $content_width ) ) {
+			$image_params = array( 'w' => $content_width );
+		}
+
+		// If we have image size data from the shortcode, let's use it.
+		if ( isset( $atts['image_size'] ) ) {
+			$image_params = array( 'resize' => $atts['image_size'] );
+		}
+
+		/**
+		 * Allows setting up custom Photon parameters to manipulate the image output in the Display Posts widget.
+		 *
+		 * @see https://developer.wordpress.com/docs/photon/
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param array $image_params Array of Photon Parameters.
+		 */
+		$image_params = apply_filters( 'jeherve_post_embed_image_params', $image_params );
+
+		/** This filter is documented in Jetpack */
+		return apply_filters( 'jetpack_photon_url', $featured_image_url, $image_params );
+	}
+
+	/**
 	 * Build the post list
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param array $posts_info Array of data about our posts.
-	 * @param int $number_of_posts Number of posts we want to display.
-	 * @param array $atts Array of shortcode attributes.
+	 * @param array   $posts_info      Array of data about our posts.
+	 * @param int     $number_of_posts Number of posts we want to display.
+	 * @param array   $atts            Array of shortcode attributes.
 	 *
-	 * @return string $list_layout HTML output of our posts.
+	 * @return string $list_layout     HTML output of our posts.
 	 */
 	public function post_list( $posts_info, $number_of_posts, $atts ) {
 		/**
@@ -512,10 +625,10 @@ class Jeherve_Post_Embeds {
 		 *
 		 * @since 1.1.0
 		 *
-		 * @param string $loop Post loop.
-		 * @param array $posts_info Array of data about our posts.
-		 * @param int $number_of_posts Number of posts we want to display.
-		 * @param array $atts Array of shortcode attributes.
+		 * @param string $loop            Post loop.
+		 * @param array  $posts_info      Array of data about our posts.
+		 * @param int    $number_of_posts Number of posts we want to display.
+		 * @param array  $atts            Array of shortcode attributes.
 		 */
 		return apply_filters( 'jeherve_post_embed_post_loop', '', $posts_info, $number_of_posts, $atts );
 	}
@@ -811,7 +924,7 @@ class Jeherve_Post_Embeds {
 	 *
 	 * @since 1.1.0
 	 *
-	 * @param string $url Site URL.
+	 * @param string  $url Site URL.
 	 *
 	 * @return string $url Clean URL. No scheme, no www.
 	 */
