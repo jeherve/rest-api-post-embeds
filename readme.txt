@@ -1,7 +1,7 @@
 === REST API Post Embeds ===
 Contributors: jeherve
 Tags: shortcode, embed, posts, jetpack, api, wp api, rest api
-Stable tag: 1.1
+Stable tag: 1.2
 Requires at least: 4.3
 Tested up to: 4.3
 
@@ -52,7 +52,6 @@ The `jeherve_post_embed` shortcode includes different parameters, listed below:
 * `include_images`:
 	* Default to `true`.
 	* When set to `true`, if the posts include a [Featured Image](https://codex.wordpress.org/Post_Thumbnails), it will be displayed above the post.
-	* Not available when using the WP REST API.
 * `include_title`:
 	* Default to `true`.
 	* Includes the post title.
@@ -71,7 +70,6 @@ The `jeherve_post_embed` shortcode includes different parameters, listed below:
 	* For that option to work, you'll need to use Jetpack on your site, as well as the [Photon module](http://jetpack.me/support/photon/).
 	* Option should follow this format: `width,height`, `width` and `height` being the value in pixels.
 	* By default, the images will be as wide as your theme's `$content_width` value ([reference](https://codex.wordpress.org/Content_Width)).
-	* Not available when using the WP REST API.
 * `order`:
 	* Order in which the posts are displayed, desc or asc.
 	* Default to `DESC`.
@@ -134,8 +132,18 @@ Yes! The plugin includes quite a few filters you can use to customize the post l
 * `jeherve_post_embed_post_loop` allows you to build your own post loop from the data you get from the API.
 * `jeherve_post_embed_image_params` allows you to specify custom Photon parameters applied to the Featured Images. It accepts an array of parameters. The accepted parameters are available [here](https://developer.wordpress.com/docs/photon/).
 * `jeherve_post_embed_article_layout` allows you to filter the layout of a single article in the list.
+* `jeherve_post_embed_featured_image` allows you to replace the Featured Image used for each post.
 
 == Changelog ==
+
+= 1.2 =
+Release Date: August 26, 2015
+
+* Use the `media` endpoint from the WP REST API to grab the featured image when available.
+* Refactor API queries to avoid caching responses from the APIs when they included an error.
+* Add a new filter, `jeherve_post_embed_featured_image`.
+* Add an additional embed style, `embed-grid`.
+* Include an uninstall.php to delete all transients created by the plugin when uninstalling it.
 
 = 1.1 =
 Releast Date: August 17, 2015
