@@ -104,7 +104,7 @@ class Jeherve_Post_Embeds {
 			$url = sprintf( esc_url( '%s/wp-json/wp/v2/posts/' ), $blog_id );
 
 			foreach( $args as $arg => $value ) {
-				$args["filter[{$arg}]"] = $value;
+				$args["filter%5B{$arg}%5D"] = $value;
 				unset( $args[ $arg ] );
 			}
 
