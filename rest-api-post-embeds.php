@@ -478,6 +478,8 @@ class Jeherve_Post_Embeds {
 			// If we get an error in that response, let's give up now
 			if ( isset( $posts_info->error ) && 'jetpack_error' == $posts_info->error ) {
 				return '<p>' . __( 'Error in the posts being returned. We cannot load blog data at this time.', 'jeherve_post_embed' ) . '</p>';
+			} elseif ( empty( $posts_info ) ) {
+				return '<p>' . __( 'This query did not return any results. Are you sure the site uses the WP REST API?', 'jeherve_post_embed' ) . '</p>';
 			} else {
 				set_transient( 'jeherve_post_embed_' . $query_hash, $posts_info, 10 * MINUTE_IN_SECONDS );
 			}
