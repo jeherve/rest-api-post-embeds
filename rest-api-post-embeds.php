@@ -480,6 +480,8 @@ class Jeherve_Post_Embeds {
 				return '<p>' . __( 'Error in the posts being returned. We cannot load blog data at this time.', 'jeherve_post_embed' ) . '</p>';
 			} elseif ( empty( $posts_info ) ) {
 				return '<p>' . __( 'This query did not return any results. Are you sure the site uses the WP REST API?', 'jeherve_post_embed' ) . '</p>';
+			} elseif ( isset( $posts_info->found ) && '0' == $posts_info->found ) {
+				return '<p>' . __( 'No posts found for that query. Try different parameters.', 'jeherve_post_embed' ) . '</p>';
 			} else {
 				set_transient( 'jeherve_post_embed_' . $query_hash, $posts_info, 10 * MINUTE_IN_SECONDS );
 			}
