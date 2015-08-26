@@ -4,7 +4,7 @@
  * Plugin URI: http://wordpress.org/plugins/rest-api-post-embeds
  * Description: Embed posts from your site or others' into your posts and pages.
  * Author: Jeremy Herve
- * Version: 1.2
+ * Version: 1.2.1
  * Author URI: http://jeremy.hu
  * License: GPL2+
  * Textdomain: jeherve_post_embed
