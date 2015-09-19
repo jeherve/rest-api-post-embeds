@@ -195,7 +195,7 @@ class Jeherve_Post_Embeds {
 			return $loop;
 		}
 
-		for ( $i = 0; $i < $number_of_posts; $i++ ) {
+		for ( $i = 0; $i < $posts_info->found; $i++ ) {
 			$single_post = $posts_info->posts[$i];
 
 			$article = '';
