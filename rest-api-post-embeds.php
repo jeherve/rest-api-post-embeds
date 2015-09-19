@@ -289,7 +289,7 @@ class Jeherve_Post_Embeds {
 	public function wpapi_post_loop( $loop, $posts_info, $number_of_posts, $atts ) {
 
 		// Bail if the shortcode doesn't use the WP REST API
-		if ( 'false' === $atts['wpapi'] ) {
+		if ( 'true' != $atts['wpapi'] ) {
 			return $loop;
 		}
 
@@ -391,7 +391,7 @@ class Jeherve_Post_Embeds {
 	 * @return string $str             Credits HTML output.
 	 */
 	public function credits( $loop, $posts_info, $number_of_posts, $atts ) {
-		if ( true === $atts['include_credits'] || isset( $atts['url'] ) ) {
+		if ( true === $atts['include_credits'] && isset( $atts['url'] ) ) {
 			$credits = '<div class="jeherve-post-embeds-credits">';
 			$credits .= sprintf(
 				_x( 'Source: <a class="jeherve-post-embeds-credit-link" href="http://%1$s">%1$s</a>', 'Site URL', 'jeherve_post_embed' ),
