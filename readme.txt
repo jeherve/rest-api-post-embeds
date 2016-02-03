@@ -1,9 +1,9 @@
 === REST API Post Embeds ===
 Contributors: jeherve
 Tags: shortcode, embed, posts, jetpack, api, wp api, rest api
-Stable tag: 1.2.2
+Stable tag: 1.3
 Requires at least: 4.3
-Tested up to: 4.3.1
+Tested up to: 4.4.2
 
 Embed posts from your site or others' into your posts and pages.
 
@@ -133,8 +133,16 @@ Yes! The plugin includes quite a few filters you can use to customize the post l
 * `jeherve_post_embed_image_params` allows you to specify custom Photon parameters applied to the Featured Images. It accepts an array of parameters. The accepted parameters are available [here](https://developer.wordpress.com/docs/photon/).
 * `jeherve_post_embed_article_layout` allows you to filter the layout of a single article in the list.
 * `jeherve_post_embed_featured_image` allows you to replace the Featured Image used for each post.
+* `jeherve_post_embed_posts_cache` allows you to control how long the post list is cached.
+* `jeherve_post_embed_featured_cache` allows you to control how long the featured images are cached.
 
 == Changelog ==
+
+= 1.3 =
+Release Date: February 3, 2016
+
+* Change the way Featured Images are called. [Featured Images are now named Featured Media in the WP REST API](https://github.com/WP-API/WP-API/pull/2044).
+* Introduce 2 new filters to control how long transients are cached.
 
 = 1.2.2 =
 Release Date: September 21, 2015
