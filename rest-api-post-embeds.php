@@ -46,6 +46,7 @@ class Jeherve_Post_Embeds {
 		wp_enqueue_style( 'jeherve_post_embed' );
 	}
 
+
 	/**
 	 * Get the WordPress.com blog ID of your own site.
 	 *
@@ -487,7 +488,16 @@ class Jeherve_Post_Embeds {
 			} elseif ( isset( $posts_info->found ) && '0' == $posts_info->found ) {
 				return '<p>' . __( 'No posts found for that query. Try different parameters.', 'jeherve_post_embed' ) . '</p>';
 			} else {
-				set_transient( 'jeherve_post_embed_' . $query_hash, $posts_info, 10 * MINUTE_IN_SECONDS );
+				/**
+				 * Filter the amount of time each post list is cached.
+				 *
+				 * @since 1.3.0
+				 *
+				 * @param string $post_list_caching Amount of time each post list is cached. Default to 10 minutes.
+				 */
+				$post_list_caching = apply_filters( 'jeherve_post_embed_posts_cache', 10 * MINUTE_IN_SECONDS );
+
+				set_transient( 'jeherve_post_embed_' . $query_hash, $posts_info, $post_list_caching );
 			}
 
 		} else {
@@ -559,7 +569,17 @@ class Jeherve_Post_Embeds {
 			$featured_response = wp_remote_retrieve_body(
 				wp_remote_get( esc_url_raw( $featured_query_url ) )
 			);
-			set_transient( 'jeherve_post_embed_' . $featured_id . '_' . $featured_query_hash, $featured_response, 10 * HOUR_IN_SECONDS );
+
+			/**
+			 * Filter the amount of time each Featured Image is cached.
+			 *
+			 * @since 1.3.0
+			 *
+			 * @param string $featured_img_caching Amount of time each Featured Image is cached. Default is 10 hours.
+			 */
+			$featured_img_caching = apply_filters( 'jeherve_post_embed_featured_cache', 10 * HOUR_IN_SECONDS );
+
+			set_transient( 'jeherve_post_embed_' . $featured_id . '_' . $featured_query_hash, $featured_response, $featured_img_caching );
 		} else {
 			$featured_response = $cached_featured;
 		}
