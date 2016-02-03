@@ -313,10 +313,10 @@ class Jeherve_Post_Embeds {
 			// Featured Image
 			if (
 				isset( $atts['include_images'] ) &&
-				( isset( $post->featured_image ) && ! empty( $post->featured_image ) )
+				( isset( $post->featured_media ) && ! empty( $post->featured_media ) )
 			) {
 				// Get the Featured Image URL from the Featured Image ID.
-				$featured_image_url = $this->get_wpapi_featured_image( $post->featured_image, $atts );
+				$featured_image_url = $this->get_wpapi_featured_image( $post->featured_media, $atts );
 
 				if ( empty( $featured_image_url ) ) {
 					continue;
