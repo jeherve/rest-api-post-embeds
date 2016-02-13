@@ -1,13 +1,14 @@
 <?php
 /*
  * Plugin Name: REST API Post Embeds
- * Plugin URI: http://wordpress.org/plugins/rest-api-post-embeds
+ * Plugin URI: https://wordpress.org/plugins/rest-api-post-embeds
  * Description: Embed posts from your site or others' into your posts and pages.
  * Author: Jeremy Herve
- * Version: 1.3
- * Author URI: http://jeremy.hu
+ * Version: 1.3.1
+ * Author URI: https://jeremy.hu
  * License: GPL2+
- * Textdomain: jeherve_post_embed
+ * Text Domain: rest-api-post-embeds
+ * Domain Path: /languages
  */
 
 class Jeherve_Post_Embeds {
@@ -206,7 +207,7 @@ class Jeherve_Post_Embeds {
 			$article = '';
 
 			// Title
-			$post_title = ( $single_post->title ) ? $single_post->title : __( ' ( No Title ) ', 'jeherve_post_embed' );
+			$post_title = ( $single_post->title ) ? $single_post->title : __( ' ( No Title ) ', 'rest-api-post-embeds' );
 			if ( true === $atts['include_title'] ) {
 				$article .= sprintf(
 					'<h4 class="post-embed-post-title"><a href="%1$s">%2$s</a></h4>',
@@ -302,7 +303,7 @@ class Jeherve_Post_Embeds {
 			$article = '';
 
 			// Title
-			$post_title = ( $post->title->rendered ) ? $post->title->rendered : __( ' ( No Title ) ', 'jeherve_post_embed' );
+			$post_title = ( $post->title->rendered ) ? $post->title->rendered : __( ' ( No Title ) ', 'rest-api-post-embeds' );
 			if ( true === $atts['include_title'] ) {
 				$article .= sprintf(
 					'<h4 class="post-embed-post-title"><a href="%1$s">%2$s</a></h4>',
@@ -399,7 +400,7 @@ class Jeherve_Post_Embeds {
 		if ( true === $atts['include_credits'] && isset( $atts['url'] ) ) {
 			$credits = '<div class="jeherve-post-embeds-credits">';
 			$credits .= sprintf(
-				_x( 'Source: <a class="jeherve-post-embeds-credit-link" href="http://%1$s">%1$s</a>', 'Site URL', 'jeherve_post_embed' ),
+				_x( 'Source: <a class="jeherve-post-embeds-credit-link" href="http://%1$s">%1$s</a>', 'Site URL', 'rest-api-post-embeds' ),
 				$atts['url']
 			);
 			$credits .= '</div>';
@@ -469,24 +470,24 @@ class Jeherve_Post_Embeds {
 			$response = wp_remote_get( esc_url_raw( $query_url ) );
 
 			if ( is_wp_error( $response ) || empty( $response ) ) {
-				return '<p>' . __( 'Error in the response. We cannot load blog data at this time.', 'jeherve_post_embed' ) . '</p>';
+				return '<p>' . __( 'Error in the response. We cannot load blog data at this time.', 'rest-api-post-embeds' ) . '</p>';
 			}
 
 			$posts_data = wp_remote_retrieve_body( $response );
 
 			if ( is_wp_error( $posts_data ) || empty( $posts_data ) ) {
-				return '<p>' . __( 'Error in the data received from the site. We cannot load blog data at this time.', 'jeherve_post_embed' ) . '</p>';
+				return '<p>' . __( 'Error in the data received from the site. We cannot load blog data at this time.', 'rest-api-post-embeds' ) . '</p>';
 			}
 
 			$posts_info = json_decode( $posts_data );
 
 			// If we get an error in that response, let's give up now
 			if ( isset( $posts_info->error ) && 'jetpack_error' == $posts_info->error ) {
-				return '<p>' . __( 'Error in the posts being returned. We cannot load blog data at this time.', 'jeherve_post_embed' ) . '</p>';
+				return '<p>' . __( 'Error in the posts being returned. We cannot load blog data at this time.', 'rest-api-post-embeds' ) . '</p>';
 			} elseif ( empty( $posts_info ) ) {
-				return '<p>' . __( 'This query did not return any results. Are you sure the site uses the WP REST API?', 'jeherve_post_embed' ) . '</p>';
+				return '<p>' . __( 'This query did not return any results. Are you sure the site uses the WP REST API?', 'rest-api-post-embeds' ) . '</p>';
 			} elseif ( isset( $posts_info->found ) && '0' == $posts_info->found ) {
-				return '<p>' . __( 'No posts found for that query. Try different parameters.', 'jeherve_post_embed' ) . '</p>';
+				return '<p>' . __( 'No posts found for that query. Try different parameters.', 'rest-api-post-embeds' ) . '</p>';
 			} else {
 				/**
 				 * Filter the amount of time each post list is cached.
