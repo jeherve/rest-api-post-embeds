@@ -1,7 +1,7 @@
 === REST API Post Embeds ===
 Contributors: jeherve
 Tags: shortcode, embed, posts, jetpack, api, wp api, rest api
-Stable tag: 1.3.1
+Stable tag: 1.3.2
 Requires at least: 4.3
 Tested up to: 4.4.2
 
@@ -137,6 +137,10 @@ Yes! The plugin includes quite a few filters you can use to customize the post l
 * `jeherve_post_embed_featured_cache` allows you to control how long the featured images are cached.
 
 == Changelog ==
+
+= 1.3.2 =
+Release Date: March 14, 2016
+* Allow the WordPress.com REST API to get Custom Post Types.
 
 = 1.3.1 =
 Release Date: February 13, 2016
