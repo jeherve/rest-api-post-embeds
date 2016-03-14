@@ -877,7 +877,7 @@ class Jeherve_Post_Embeds {
 			if ( 'any' == $type ) {
 				$args['type'] = 'any';
 			} else {
-				$args['type'] = 'post';
+				$args['type'] = $type;
 			}
 
 			// Now let's handle WP REST API
