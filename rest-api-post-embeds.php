@@ -218,8 +218,8 @@ class Jeherve_Post_Embeds {
 
 			// Featured Image
 			if (
-				isset( $atts['include_images'] ) &&
-				( isset( $single_post->featured_image ) && ! empty( $single_post->featured_image ) )
+				( isset( $atts['include_images'] ) && true === $atts['include_images'] )
+				&& ( isset( $single_post->featured_image ) && ! empty( $single_post->featured_image ) )
 			) {
 
 				$article .= sprintf(
@@ -314,8 +314,8 @@ class Jeherve_Post_Embeds {
 
 			// Featured Image
 			if (
-				isset( $atts['include_images'] ) &&
-				( isset( $post->featured_media ) && ! empty( $post->featured_media ) )
+				( isset( $atts['include_images'] ) && true === $atts['include_images'] )
+				&& ( isset( $post->featured_media ) && ! empty( $post->featured_media ) )
 			) {
 				// Get the Featured Image URL from the Featured Image ID.
 				$featured_image_url = $this->get_wpapi_featured_image( $post->featured_media, $atts );
