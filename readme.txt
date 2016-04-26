@@ -140,10 +140,12 @@ Yes! The plugin includes quite a few filters you can use to customize the post l
 
 = 1.3.3 =
 Release Date: April 26, 2016
+
 * Make sure we don't display Featured Images when the attribute isn't set to true.
 
 = 1.3.2 =
 Release Date: March 14, 2016
+
 * Allow the WordPress.com REST API to get Custom Post Types.
 
 = 1.3.1 =
