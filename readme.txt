@@ -1,9 +1,9 @@
 === REST API Post Embeds ===
 Contributors: jeherve
 Tags: shortcode, embed, posts, jetpack, api, wp api, rest api
-Stable tag: 1.3.3
-Requires at least: 4.3
-Tested up to: 4.5
+Stable tag: 1.4.0
+Requires at least: 4.6
+Tested up to: 4.7
 
 Embed posts from your site or others' into your posts and pages.
 
@@ -135,8 +135,17 @@ Yes! The plugin includes quite a few filters you can use to customize the post l
 * `jeherve_post_embed_featured_image` allows you to replace the Featured Image used for each post.
 * `jeherve_post_embed_posts_cache` allows you to control how long the post list is cached.
 * `jeherve_post_embed_featured_cache` allows you to control how long the featured images are cached.
+* `jeherve_post_embed_term_cache` allows you to control how long the terms are cached.
 
 == Changelog ==
+
+= 1.4.0 -
+Release Date: November 17, 2016
+
+* WP REST API: replace the filter param by top level query parameters. This makes category and tag filtering work again.
+* Handle all Posts Types, including Pages, in the WP REST API.
+* Coding Standards cleanup.
+* Make sure the number of posts option is respected when using the WP REST API.
 
 = 1.3.3 =
 Release Date: April 26, 2016
