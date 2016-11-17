@@ -139,7 +139,7 @@ Yes! The plugin includes quite a few filters you can use to customize the post l
 
 == Changelog ==
 
-= 1.4.0 -
+= 1.4.0 =
 Release Date: November 17, 2016
 
 * WP REST API: replace the filter param by top level query parameters. This makes category and tag filtering work again.
