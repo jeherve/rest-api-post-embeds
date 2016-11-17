@@ -122,15 +122,21 @@ class Jeherve_Post_Embeds {
 				$blog_id,
 				$post_type
 			);
-
-			foreach ( $args as $arg => $value ) {
-				$args["filter%5B{$arg}%5D"] = $value;
-				unset( $args[ $arg ] );
-			}
-
 		} else {
 			// Query the WordPress.com REST API URL.
 			$url = sprintf( esc_url( 'https://public-api.wordpress.com/rest/v1.1/sites/%s/posts/' ), $blog_id );
+		}
+
+		// Look for tag ID if we are using the WP REST API and the shortcode includes info about a tag.
+		if ( true === $atts['wpapi'] && isset( $args['tag'] ) ) {
+			$args['tags'] = $this->get_cat_tag_id( $args['tag'], 'tags', $atts );
+			unset( $args['tag'] );
+		}
+
+		// Look for category ID if we are using the WP REST API and the shortcode includes info about a category.
+		if ( true === $atts['wpapi'] && isset( $args['category'] ) ) {
+			$args['categories'] = $this->get_cat_tag_id( $args['category'], 'categories', $atts );
+			unset( $args['category'] );
 		}
 
 		// Add query arguments.
@@ -864,35 +870,19 @@ class Jeherve_Post_Embeds {
 		/**
 		 * Tag.
 		 * The WordPress.com REST API accepts a name or a slug.
-		 * The REST API only accepts IDs.
+		 * The REST API only accepts IDs. We'll transform that later before to run the query.
 		 */
 		if ( $tag ) {
 			$args['tag'] = $tag;
-			if ( true === $atts['wpapi'] ) {
-				$tag = get_term_by( 'slug', $tag, 'post_tag' );
-				if ( ! empty( $tag ) ) {
-					$tag_id = $tag->term_id;
-					$args['tags'] = $tag_id;
-				}
-				unset( $args['tag'] );
-			}
 		}
 
 		/**
 		 * Category.
 		 * The WordPress.com REST API accepts a name or a slug.
-		 * The REST API only accepts IDs.
+		 * The REST API only accepts IDs. We'll transform that later before to run the query.
 		 */
 		if ( $category ) {
 			$args['category'] = $category;
-			if ( true === $atts['wpapi'] ) {
-				$cat = get_term_by( 'slug', $category, 'category' );
-				if ( ! empty( $cat ) ) {
-					$cat_id = $cat->term_id;
-					$args['categories'] = $cat_id;
-				}
-				unset( $args['category'] );
-			}
 		}
 
 		/**
@@ -959,6 +949,79 @@ class Jeherve_Post_Embeds {
 		return $this->get_posts( $atts, $args );
 	}
 
+	/**
+	 * Get a category or a tag ID from the WP REST API.
+	 *
+	 * @since 1.4.0
+	 *
+	 * @param string $term_name Name of the Category or Tag.
+	 * @param string $tax_name  'categories' or 'tags'.
+	 * @param array  $atts      Shortcode attributes.
+	 *
+	 * @return string $term_id Category or Tag ID.
+	 */
+	public function get_cat_tag_id( $term_name, $tax_name, $atts ) {
+		if ( ! $atts || ! $term_name || ! $tax_name ) {
+			return;
+		}
+
+		/** This filter is documented in rest-api-post-embeds.php */
+		$blog_id = apply_filters( 'jeherve_post_embed_blog_id', '' );
+
+		// Overwrite the blog ID if it was defined in the shortcode.
+		if ( $atts['url'] ) {
+			$blog_id = urlencode( $atts['url'] );
+		}
+
+		// If no post ID, let's stop right there.
+		if ( ! $blog_id ) {
+			return;
+		}
+
+		$tax_query_url = sprintf(
+			esc_url( '%1$s/wp-json/wp/v2/%2$s?slug=%3$s' ),
+			$blog_id,
+			$tax_name,
+			$term_name
+		);
+
+		// Build a hash of the query URL. We'll use it later when building the transient.
+		if ( $tax_query_url ) {
+			$tax_query_hash = substr( md5( $tax_query_url ), 0, 21 );
+		} else {
+			return;
+		}
+
+		// Look for data in our transient.
+		$cached_tax = get_transient( 'jeherve_post_embed_term_' . $term_name . '_' . $tax_query_hash );
+		if ( false === $cached_tax ) {
+			$term_response = wp_remote_retrieve_body(
+				wp_remote_get( esc_url_raw( $tax_query_url ) )
+			);
+
+			/**
+			 * Filter the amount of time each Term info is cached.
+			 *
+			 * @since 1.4.0
+			 *
+			 * @param string $term_caching Amount of time each term is cached. Default is a day.
+			 */
+			$term_caching = apply_filters( 'jeherve_post_embed_term_cache', 1 * DAY_IN_SECONDS );
+
+			set_transient( 'jeherve_post_embed_term_' . $term_name . '_' . $tax_query_hash, $term_response, $term_caching );
+		} else {
+			$term_response = $cached_tax;
+		}
+
+		if ( ! is_wp_error( $term_response )  ) {
+			$term_info = json_decode( $term_response, true );
+			$term_id = $term_info[0]['id'];
+		} else {
+			return;
+		}
+
+		return $term_id;
+	}
 
 	/**
 	 * Convert string to boolean
