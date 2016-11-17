@@ -875,12 +875,13 @@ class Jeherve_Post_Embeds {
 		/**
 		 * Category.
 		 * The WordPress.com REST API accepts a name or a slug.
-		 * The REST API only accepts names.
+		 * The REST API only accepts IDs.
 		 */
 		if ( $category ) {
 			$args['category'] = $category;
 			if ( true === $atts['wpapi'] ) {
-				$args['category_name'] = $category;
+				$cat_id = get_cat_ID( $category );
+				$args['categories'] = $cat_id;
 				unset( $args['category'] );
 			}
 		}
