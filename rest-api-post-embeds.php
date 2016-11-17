@@ -862,14 +862,20 @@ class Jeherve_Post_Embeds {
 		}
 
 		/**
-		 * Tag name or slug.
-		 * Will return posts that belong to any tags on the list.
-		 *
-		 * @to-do: Improve both categories and tags for the WP REST API, since it offers more options.
-		 * @see https://codex.wordpress.org/Class_Reference/WP_Query#Tag_Parameters
+		 * Tag.
+		 * The WordPress.com REST API accepts a name or a slug.
+		 * The REST API only accepts IDs.
 		 */
 		if ( $tag ) {
 			$args['tag'] = $tag;
+			if ( true === $atts['wpapi'] ) {
+				$tag = get_term_by( 'slug', $tag, 'post_tag' );
+				if ( ! empty( $tag ) ) {
+					$tag_id = $tag->term_id;
+					$args['tags'] = $tag_id;
+				}
+				unset( $args['tag'] );
+			}
 		}
 
 		/**
@@ -880,8 +886,11 @@ class Jeherve_Post_Embeds {
 		if ( $category ) {
 			$args['category'] = $category;
 			if ( true === $atts['wpapi'] ) {
-				$cat_id = get_cat_ID( $category );
-				$args['categories'] = $cat_id;
+				$cat = get_term_by( 'slug', $category, 'category' );
+				if ( ! empty( $cat ) ) {
+					$cat_id = $cat->term_id;
+					$args['categories'] = $cat_id;
+				}
 				unset( $args['category'] );
 			}
 		}
