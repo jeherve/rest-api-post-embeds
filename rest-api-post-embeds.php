@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Plugin Name: REST API Post Embeds
  * Plugin URI: https://wordpress.org/plugins/rest-api-post-embeds
  * Description: Embed posts from your site or others' into your posts and pages.
@@ -9,27 +9,33 @@
  * License: GPL2+
  * Text Domain: rest-api-post-embeds
  * Domain Path: /languages
+ *
+ * @package Jeherve_Post_Embeds
  */
 
+/**
+ * Create our main plugin class.
+ */
 class Jeherve_Post_Embeds {
 	private static $instance;
 
 	static function get_instance() {
-		if ( ! self::$instance )
+		if ( ! self::$instance ) {
 			self::$instance = new Jeherve_Post_Embeds;
+		}
 
 		return self::$instance;
 	}
 
 	private function __construct() {
-		// Prepare query
+		// Prepare query.
 		add_filter(    'jeherve_post_embed_blog_id',        array( $this, 'get_blog_details' ), 10, 1 );
 		add_filter(    'jeherve_post_embed_query_url',      array( $this, 'build_query_URL' ), 10, 3 );
 
-		// Create shortcode
+		// Create shortcode.
 		add_shortcode( 'jeherve_post_embed',                array( $this, 'jeherve_post_embed_shortcode' ) );
 
-		// Output embed
+		// Output embed.
 		add_filter(    'jeherve_post_embed_post_loop',      array( $this, 'opening_div' ), 1, 4 );
 		add_filter(    'jeherve_post_embed_post_loop',      array( $this, 'headline' ), 2, 4 );
 		add_filter(    'jeherve_post_embed_post_loop',      array( $this, 'wpcom_post_loop' ), 10, 4 );
@@ -43,7 +49,7 @@ class Jeherve_Post_Embeds {
 	}
 
 	public function enqueue_assets() {
-		wp_register_style( 'jeherve_post_embed', plugins_url( 'style.css', __FILE__) );
+		wp_register_style( 'jeherve_post_embed', plugins_url( 'style.css', __FILE__ ) );
 		wp_enqueue_style( 'jeherve_post_embed' );
 	}
 
@@ -53,11 +59,12 @@ class Jeherve_Post_Embeds {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @param  absint $blog_id WordPress.com blog ID.
 	 * @return absint $blog_id WordPress.com blog ID.
 	 */
 	public function get_blog_details( $blog_id ) {
 
-		// Get the blog's ID
+		// Get the blog's ID.
 		if ( class_exists( 'Jetpack_Options' ) ) {
 			$blog_id = Jetpack_Options::get_option( 'id' );
 		}
@@ -95,17 +102,17 @@ class Jeherve_Post_Embeds {
 			$blog_id = urlencode( $atts['url'] );
 		}
 
-		// If no post ID, let's stop right there
+		// If no post ID, let's stop right there.
 		if ( ! $blog_id ) {
 			return;
 		}
 
 		// Are we using the WP REST API?
 		if ( true === $atts['wpapi'] && ! absint( $blog_id ) ) {
-			// Query the WP REST API (V2)
+			// Query the WP REST API (V2).
 			$url = sprintf( esc_url( '%s/wp-json/wp/v2/posts/' ), $blog_id );
 
-			foreach( $args as $arg => $value ) {
+			foreach ( $args as $arg => $value ) {
 				$args["filter%5B{$arg}%5D"] = $value;
 				unset( $args[ $arg ] );
 			}
@@ -148,7 +155,7 @@ class Jeherve_Post_Embeds {
 	public function opening_div( $loop, $posts_info, $number_of_posts, $atts ) {
 		$class = ( $atts['wrapper_class'] ) ? $atts['wrapper_class'] : '';
 
-		$opening = '<div class="jeherve-post-embeds ' . $class .  '">' . "\n";
+		$opening = '<div class="jeherve-post-embeds ' . $class . '">' . "\n";
 
 		return $opening . $loop;
 	}
@@ -192,7 +199,7 @@ class Jeherve_Post_Embeds {
 	 */
 	public function wpcom_post_loop( $loop, $posts_info, $number_of_posts, $atts ) {
 
-		// Bail if the shortcode uses the WP REST API
+		// Bail if the shortcode uses the WP REST API.
 		if ( true === $atts['wpapi'] ) {
 			return $loop;
 		}
@@ -202,11 +209,11 @@ class Jeherve_Post_Embeds {
 		}
 
 		for ( $i = 0; $i < $number_of_posts; $i++ ) {
-			$single_post = $posts_info->posts[$i];
+			$single_post = $posts_info->posts[ $i ];
 
 			$article = '';
 
-			// Title
+			// Title.
 			$post_title = ( $single_post->title ) ? $single_post->title : __( ' ( No Title ) ', 'rest-api-post-embeds' );
 			if ( true === $atts['include_title'] ) {
 				$article .= sprintf(
@@ -216,7 +223,7 @@ class Jeherve_Post_Embeds {
 				);
 			}
 
-			// Featured Image
+			// Featured Image.
 			if (
 				( isset( $atts['include_images'] ) && true === $atts['include_images'] )
 				&& ( isset( $single_post->featured_image ) && ! empty( $single_post->featured_image ) )
@@ -294,7 +301,7 @@ class Jeherve_Post_Embeds {
 	 */
 	public function wpapi_post_loop( $loop, $posts_info, $number_of_posts, $atts ) {
 
-		// Bail if the shortcode doesn't use the WP REST API
+		// Bail if the shortcode doesn't use the WP REST API.
 		if ( 'true' != $atts['wpapi'] ) {
 			return $loop;
 		}
@@ -302,7 +309,7 @@ class Jeherve_Post_Embeds {
 		foreach ( array_slice( $posts_info, 0, $number_of_posts ) as $post ) {
 			$article = '';
 
-			// Title
+			// Title.
 			$post_title = ( $post->title->rendered ) ? $post->title->rendered : __( ' ( No Title ) ', 'rest-api-post-embeds' );
 			if ( true === $atts['include_title'] ) {
 				$article .= sprintf(
@@ -312,7 +319,7 @@ class Jeherve_Post_Embeds {
 				);
 			}
 
-			// Featured Image
+			// Featured Image.
 			if (
 				( isset( $atts['include_images'] ) && true === $atts['include_images'] )
 				&& ( isset( $post->featured_media ) && ! empty( $post->featured_media ) )
@@ -464,7 +471,7 @@ class Jeherve_Post_Embeds {
 			return;
 		}
 
-		// Look for data in our transient. If nothing, let's get a list of posts to display
+		// Look for data in our transient. If nothing, let's get a list of posts to display.
 		$data_from_cache = get_transient( 'jeherve_post_embed_' . $query_hash );
 		if ( false === $data_from_cache ) {
 			$response = wp_remote_get( esc_url_raw( $query_url ) );
@@ -481,7 +488,7 @@ class Jeherve_Post_Embeds {
 
 			$posts_info = json_decode( $posts_data );
 
-			// If we get an error in that response, let's give up now
+			// If we get an error in that response, let's give up now.
 			if ( isset( $posts_info->error ) && 'jetpack_error' == $posts_info->error ) {
 				return '<p>' . __( 'Error in the posts being returned. We cannot load blog data at this time.', 'rest-api-post-embeds' ) . '</p>';
 			} elseif ( empty( $posts_info ) ) {
@@ -517,7 +524,7 @@ class Jeherve_Post_Embeds {
 			return;
 		}
 
-		// Build our list
+		// Build our list.
 		return $this->post_list( $posts_info, $number_of_posts, $atts );
 
 	}
@@ -546,7 +553,7 @@ class Jeherve_Post_Embeds {
 			$blog_id = urlencode( $atts['url'] );
 		}
 
-		// If no post ID, let's stop right there
+		// If no post ID, let's stop right there.
 		if ( ! $blog_id ) {
 			return;
 		}
@@ -564,7 +571,7 @@ class Jeherve_Post_Embeds {
 			return;
 		}
 
-		// Look for data in our transient. If nothing, let's get a list of posts to display
+		// Look for data in our transient. If nothing, let's get a list of posts to display.
 		$cached_featured = get_transient( 'jeherve_post_embed_featured_' . $featured_id . '_' . $featured_query_hash );
 		if ( false === $cached_featured ) {
 			$featured_response = wp_remote_retrieve_body(
@@ -664,10 +671,12 @@ class Jeherve_Post_Embeds {
 
 	/**
 	 * Create a shortcode so people can output the list anywhere they want.
+	 *
+	 * @param array $atts Array of shortcode attributes.
 	 */
 	public function jeherve_post_embed_shortcode( $atts ) {
 
-		// Default Shortcode attributes
+		// Default Shortcode attributes.
 		$atts = shortcode_atts( array(
 			'ignore_sticky_posts' => false,
 			'include_images'      => true,
@@ -692,7 +701,7 @@ class Jeherve_Post_Embeds {
 			'wpapi'               => false,
 		), $atts, 'jeherve_post_embed' );
 
-		// Sanitize every attribute
+		// Sanitize every attribute.
 		$ignore_sticky_posts = $this->jeherve_post_embed_convert_string_bool( $atts['ignore_sticky_posts'] );
 		$include_images      = $this->jeherve_post_embed_convert_string_bool( $atts['include_images'] );
 		$include_title       = $this->jeherve_post_embed_convert_string_bool( $atts['include_title'] );
@@ -715,16 +724,15 @@ class Jeherve_Post_Embeds {
 		$headline            = sanitize_text_field( $atts['headline'] );
 		$wpapi               = $this->jeherve_post_embed_convert_string_bool( $atts['wpapi'] );
 
-
 		// Should we use the WP REST API instead of the WordPress.com REST API?
 		if ( $wpapi ) {
 			$atts['wpapi'] = true;
 		}
 
-		// Sticky Posts
+		// Sticky Posts.
 		if ( $ignore_sticky_posts ) {
 			$args['sticky'] = '1';
-			// The WP REST API uses the "ignore_sticky_posts" parameter instead
+			// The WP REST API uses the "ignore_sticky_posts" parameter instead.
 			if ( true === $atts['wpapi'] ) {
 				$args['ignore_sticky_posts'] = $args['sticky'];
 				unset( $args['sticky'] );
@@ -756,7 +764,7 @@ class Jeherve_Post_Embeds {
 			$atts['include_credits'] = true;
 		}
 
-		// Build a sanitized array of width and height values
+		// Build a sanitized array of width and height values.
 		if ( $image_size ) {
 			// make sure we have a comma separated list of integers.
 			$atts['image_size'] = implode( ',', array_map( 'absint', explode( ',', $image_size ) ) );
@@ -793,7 +801,7 @@ class Jeherve_Post_Embeds {
 				$args['order_by'] = 'date';
 			}
 
-			// The WP REST API uses the "orderby" parameter instead of "order_by"
+			// The WP REST API uses the "orderby" parameter instead of "order_by".
 			if ( true === $atts['wpapi'] ) {
 				$args['orderby'] = $args['order_by'];
 				unset( $args['order_by'] );
@@ -813,7 +821,7 @@ class Jeherve_Post_Embeds {
 				$args['number'] = '20';
 			}
 		}
-		// The WP REST API uses the "per_page" parameter instead:
+		// The WP REST API uses the "per_page" parameter instead.
 		if ( true === $atts['wpapi'] ) {
 			$args['per_page'] = $args['number'];
 			unset( $args['number'] );
@@ -823,6 +831,7 @@ class Jeherve_Post_Embeds {
 		 * Date Queries.
 		 *
 		 * These are simple with the WordPress.com REST API, but are not yet available with the WP REST API.
+		 *
 		 * @see https://github.com/WP-API/WP-API/issues/389
 		 */
 		// Return posts dated before the specified datetime.
@@ -870,6 +879,7 @@ class Jeherve_Post_Embeds {
 		 *
 		 * For WordPress.com things are extermely simple. Defaults to 'post', use 'any' to query for both posts and pages.
 		 * For the WP REST API, we have more options.
+		 *
 		 * @see https://codex.wordpress.org/Class_Reference/WP_Query#Type_Parameters
 		 * The WP REST API doesn't seem to handle the 'page' option in post types, though. There is a different endpoint for pages.
 		 */
@@ -880,7 +890,7 @@ class Jeherve_Post_Embeds {
 				$args['type'] = $type;
 			}
 
-			// Now let's handle WP REST API
+			// Now let's handle WP REST API.
 			if ( true === $atts['wpapi'] ) {
 				$args['post_type'] = $args['type'];
 				unset( $args['type'] );
@@ -893,10 +903,11 @@ class Jeherve_Post_Embeds {
 			$args['exclude'] = implode( ',', array_map( 'absint', explode( ',', $exclude ) ) );
 			/** `post__not_in` is only available in authenticated requests as it's marked as private in WordPress.
 			 * We consequently can't use it here.
+			 *
 			 * @see https://github.com/WP-API/WP-API/issues/1357
 			 */
 			if ( true === $atts['wpapi'] ) {
-				//$args['post__not_in'] = explode( ',', $args['exclude'] );
+				// $args['post__not_in'] = explode( ',', $args['exclude'] );
 				unset( $args['exclude'] );
 			}
 		}
@@ -906,7 +917,7 @@ class Jeherve_Post_Embeds {
 			$args['author'] = $author;
 		}
 
-		// Wrapper class
+		// Wrapper class.
 		if ( $wrapper_class ) {
 			$atts['wrapper_class'] = $wrapper_class;
 		}
@@ -931,6 +942,7 @@ class Jeherve_Post_Embeds {
 	 * because (bool) "false" == true
 	 *
 	 * Props @billerickson
+	 *
 	 * @see https://plugins.trac.wordpress.org/browser/display-posts-shortcode/tags/2.4/display-posts-shortcode.php#L323
 	 */
 	public static function jeherve_post_embed_convert_string_bool( $value ) {
@@ -953,7 +965,7 @@ class Jeherve_Post_Embeds {
 	 *
 	 * @since 1.1.0
 	 *
-	 * @param string  $url Site URL.
+	 * @param string $url Site URL.
 	 *
 	 * @return string $url Clean URL. No scheme, no www.
 	 */
@@ -966,6 +978,5 @@ class Jeherve_Post_Embeds {
 	}
 
 }
-
 // And boom.
 Jeherve_Post_Embeds::get_instance();
