@@ -109,8 +109,19 @@ class Jeherve_Post_Embeds {
 
 		// Are we using the WP REST API?
 		if ( true === $atts['wpapi'] && ! absint( $blog_id ) ) {
+			// Get the post type we want to query.
+			if ( true === $atts['post_type'] && 'any' != $atts['post_type'] ) {
+				$post_type = $atts['post_type'];
+			} else {
+				$post_type = 'posts';
+			}
+
 			// Query the WP REST API (V2).
-			$url = sprintf( esc_url( '%s/wp-json/wp/v2/posts/' ), $blog_id );
+			$url = sprintf(
+				esc_url( '%1$s/wp-json/wp/v2/%2$s/' ),
+				$blog_id,
+				$post_type
+			);
 
 			foreach ( $args as $arg => $value ) {
 				$args["filter%5B{$arg}%5D"] = $value;
@@ -881,7 +892,9 @@ class Jeherve_Post_Embeds {
 		 * For the WP REST API, we have more options.
 		 *
 		 * @see https://codex.wordpress.org/Class_Reference/WP_Query#Type_Parameters
-		 * The WP REST API doesn't seem to handle the 'page' option in post types, though. There is a different endpoint for pages.
+		 * The WP REST API doesn't seem to handle the 'page' option in post types, though.
+		 * There is a different endpoint for each post type.
+		 * We'll change the query URL accordingly.
 		 */
 		if ( $type ) {
 			if ( 'any' == $type ) {

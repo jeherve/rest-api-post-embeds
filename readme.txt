@@ -96,7 +96,7 @@ The `jeherve_post_embed` shortcode includes different parameters, listed below:
 	* Default to none.
 * `type`:
 	* Specify the post type.
-	* Defaults to `post`, use `any` to query for both posts and pages.
+	* Defaults to `posts`, use `any` to query for both posts and pages.
 * `exclude`:
 	* Excludes the specified post ID(s) from the response.
 	* Accepts a comma-separated list of Post IDs.
