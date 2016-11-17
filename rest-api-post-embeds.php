@@ -511,8 +511,8 @@ class Jeherve_Post_Embeds {
 		 */
 		if ( isset( $args['number'] ) ) {
 			$number_of_posts = $args['number'];
-		} elseif ( isset( $args['posts_per_page'] ) ) {
-			$number_of_posts = $args['posts_per_page'];
+		} elseif ( isset( $args['per_page'] ) ) {
+			$number_of_posts = $args['per_page'];
 		} else {
 			return;
 		}
@@ -813,9 +813,9 @@ class Jeherve_Post_Embeds {
 				$args['number'] = '20';
 			}
 		}
-		// The WP REST API uses the "posts_per_page" parameter instead:
+		// The WP REST API uses the "per_page" parameter instead:
 		if ( true === $atts['wpapi'] ) {
-			$args['posts_per_page'] = $args['number'];
+			$args['per_page'] = $args['number'];
 			unset( $args['number'] );
 		}
 
