@@ -76,6 +76,7 @@ The `jeherve_post_embed` shortcode includes different parameters, listed below:
 * `order_by`:
 	* What should the posts be ordered by? The accepted values are as follows: `modified` (date modified), `title`,`comment_count`, `ID`, `date`.
 	* Default is `date`.
+	* When using the WP REST API, only the following values are allowed: `date`, `relevance`, `id`, `include`, `title`, `slug`.
 * `number`:
 	* Number of posts to display.
 	* Default to the number of posts you've set under Settings > Reading in your dashboard.
