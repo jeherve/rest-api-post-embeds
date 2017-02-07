@@ -814,6 +814,8 @@ class Jeherve_Post_Embeds {
 				// The WP REST API includes a rand parameter as well.
 				'rand' == $order_by && true === $atts['wpapi'] ) {
 				$args['order_by'] = 'rand';
+				// That sorting parameter isn't enabled by default anymore. Let's enable it.
+				add_filter( 'rest_post_collection_params', array( $this, 'enable_rand_sorting_wpapi' ) );
 			} else {
 				$args['order_by'] = 'date';
 			}
@@ -1021,6 +1023,21 @@ class Jeherve_Post_Embeds {
 		}
 
 		return $term_id;
+	}
+
+	/**
+	 * Enable random sorting parameter in WP REST API queries.
+	 *
+	 * @see https://core.trac.wordpress.org/ticket/38693
+	 *
+	 * @since 1.4.1
+	 *
+	 * @param array $params REST Query parameters.
+	 */
+	public function enable_rand_sorting_wpapi( $params ) {
+		$params['orderby']['enum'][] = 'rand';
+
+		return $params;
 	}
 
 	/**
