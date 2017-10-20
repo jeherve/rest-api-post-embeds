@@ -1,9 +1,9 @@
 === REST API Post Embeds ===
 Contributors: jeherve
 Tags: shortcode, embed, posts, jetpack, api, wp api, rest api
-Stable tag: 1.4.0
+Stable tag: 1.4.1
 Requires at least: 4.6
-Tested up to: 4.7
+Tested up to: 4.9
 
 Embed posts from your site or others' into your posts and pages.
 
@@ -139,6 +139,11 @@ Yes! The plugin includes quite a few filters you can use to customize the post l
 * `jeherve_post_embed_term_cache` allows you to control how long the terms are cached.
 
 == Changelog ==
+
+= 1.4.1 =
+Release Date: October 20, 2017
+
+* WP REST API: Make sure we always return data for Custom Post Type queries.
 
 = 1.4.0 =
 Release Date: November 17, 2016
