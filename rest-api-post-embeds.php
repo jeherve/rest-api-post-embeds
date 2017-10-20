@@ -110,8 +110,8 @@ class Jeherve_Post_Embeds {
 		// Are we using the WP REST API?
 		if ( true === $atts['wpapi'] && ! absint( $blog_id ) ) {
 			// Get the post type we want to query.
-			if ( isset( $atts['post_type'] ) && 'any' != $atts['post_type'] ) {
-				$post_type = $atts['post_type'];
+			if ( isset( $args['post_type'] ) && 'any' != $args['post_type'] ) {
+				$post_type = $args['post_type'];
 			} else {
 				$post_type = 'posts';
 			}
