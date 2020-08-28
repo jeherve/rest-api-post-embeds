@@ -3,7 +3,7 @@ Contributors: jeherve
 Tags: shortcode, embed, posts, jetpack, api, wp api, rest api
 Stable tag: 1.4.1
 Requires at least: 4.6
-Tested up to: 4.9
+Tested up to: 5.5
 
 Embed posts from your site or others' into your posts and pages.
 
@@ -90,10 +90,10 @@ The `jeherve_post_embed` shortcode includes different parameters, listed below:
 	* Default to none.
 	* Not available when using the WP REST API.
 * `tag`:
-	* Only return posts belonging to a specific tag name or slug.
+	* Only return posts belonging to a specific tag name or tag slug.
 	* Default to none.
 * `category`:
-	* Only return posts belonging to a specific category name or slug.
+	* Only return posts belonging to a specific category name or category slug.
 	* Default to none.
 * `type`:
 	* Specify the post type.
