@@ -84,11 +84,11 @@ The `jeherve_post_embed` shortcode includes different parameters, listed below:
 * `before`:
 	* Only return posts dated before the specified date.
 	* Default to none.
-	* Not available when using the WP REST API.
+	* Use an ISO 8601 date format such as 2021-03-21.
 * `after`:
 	* Only return posts dated after the specified date.
 	* Default to none.
-	* Not available when using the WP REST API.
+	* Use an ISO 8601 date format such as 2021-03-21.
 * `tag`:
 	* Only return posts belonging to a specific tag name or tag slug.
 	* Default to none.
@@ -140,10 +140,11 @@ Yes! The plugin includes quite a few filters you can use to customize the post l
 
 == Changelog ==
 
-= 1.4.2 =
+= 1.5.0 =
 Release Date: March 15, 2021
 
 * Date Queries: fix date format when fetching posts from custom dates.
+* Date Queries: allow WP REST API to make date queries as well.
 * WP REST API: better fallback when the API does not accept one of the query parameters.
 
 = 1.4.1 =
