@@ -323,6 +323,20 @@ class Jeherve_Post_Embeds {
 			return $loop;
 		}
 
+		// Bail if we did not receive a valid response from the API.
+		if ( ! is_array( $posts_info ) ) {
+			$error_message = sprintf(
+				/* Translators: placeholder is an error message. */
+				__( 'This query did not return any results. Please check search parameters (error: %s).', 'rest-api-post-embeds' ),
+				( is_object( $posts_info ) && isset( $posts_info->message ) ? $posts_info->message : '' )
+			);
+			return sprintf(
+				'%1$s<p>%2$s</p>',
+				$loop,
+				esc_html( $error_message )
+			);
+		}
+
 		foreach ( array_slice( $posts_info, 0, $number_of_posts ) as $post ) {
 			$article = '';
 
