@@ -1036,11 +1036,13 @@ class Jeherve_Post_Embeds {
 	}
 
 	/**
-	 * Convert a date into an iso 8601 datetime.
+	 * Convert a date into an iso 8601 datetime (no time, just up to day, e.g. 2021-03-15)
+	 *
+	 * @param string $value Date value passed in shortcode attributes.
 	 */
 	public static function jeherve_post_embed_convert_date( $value ) {
 		if ( ! empty( $value ) ) {
-			return date( DATE_ISO8601, strtotime( $value, current_time( 'timestamp' ) ) );
+			return gmdate( 'Y-m-d', strtotime( $value ) );
 		} else {
 			return;
 		}

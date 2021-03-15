@@ -140,6 +140,11 @@ Yes! The plugin includes quite a few filters you can use to customize the post l
 
 == Changelog ==
 
+= 1.4.2 =
+Release Date: March 15, 2021
+
+* Date Queries: fix date format when fetching posts from custom dates.
+
 = 1.4.1 =
 Release Date: October 20, 2017
 
