@@ -1,0 +1,8 @@
+# Directories
+/.wordpress-org
+/.git
+/.github
+
+# Files
+.distignore
+.gitignore
