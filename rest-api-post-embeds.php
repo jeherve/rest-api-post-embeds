@@ -733,6 +733,7 @@ class Jeherve_Post_Embeds {
 		), $atts, 'jeherve_post_embed' );
 
 		// Sanitize every attribute.
+		$wpapi               = $this->jeherve_post_embed_convert_string_bool( $atts['wpapi'] );
 		$ignore_sticky_posts = $this->jeherve_post_embed_convert_string_bool( $atts['ignore_sticky_posts'] );
 		$include_images      = $this->jeherve_post_embed_convert_string_bool( $atts['include_images'] );
 		$include_title       = $this->jeherve_post_embed_convert_string_bool( $atts['include_title'] );
@@ -743,8 +744,8 @@ class Jeherve_Post_Embeds {
 		$order               = sanitize_key( $atts['order'] );
 		$order_by            = sanitize_key( $atts['order_by'] );
 		$number              = intval( $atts['number'] );
-		$before              = $this->jeherve_post_embed_convert_date( $atts['before'] );
-		$after               = $this->jeherve_post_embed_convert_date( $atts['after'] );
+		$before              = $this->jeherve_post_embed_convert_date( $atts['before'], $wpapi );
+		$after               = $this->jeherve_post_embed_convert_date( $atts['after'], $wpapi );
 		$tag                 = sanitize_text_field( $atts['tag'] );
 		$category            = sanitize_text_field( $atts['category'] );
 		$type                = sanitize_text_field( $atts['type'] );
@@ -753,7 +754,6 @@ class Jeherve_Post_Embeds {
 		$wrapper_class       = sanitize_html_class( $atts['wrapper_class'] );
 		$url                 = $this->jeherve_post_embed_clean_url( $atts['url'] );
 		$headline            = sanitize_text_field( $atts['headline'] );
-		$wpapi               = $this->jeherve_post_embed_convert_string_bool( $atts['wpapi'] );
 
 		// Should we use the WP REST API instead of the WordPress.com REST API?
 		if ( $wpapi ) {
@@ -860,25 +860,15 @@ class Jeherve_Post_Embeds {
 
 		/**
 		 * Date Queries.
-		 *
-		 * These are simple with the WordPress.com REST API, but are not yet available with the WP REST API.
-		 *
-		 * @see https://github.com/WP-API/WP-API/issues/389
 		 */
 		// Return posts dated before the specified datetime.
 		if ( $before ) {
 			$args['before'] = $before;
-			if ( true === $atts['wpapi'] ) {
-				unset( $args['before'] );
-			}
 		}
 
 		// Return posts dated after the specified datetime.
 		if ( $after ) {
 			$args['after'] = $after;
-			if ( true === $atts['wpapi'] ) {
-				unset( $args['after'] );
-			}
 		}
 
 		/**
@@ -1050,13 +1040,28 @@ class Jeherve_Post_Embeds {
 	}
 
 	/**
-	 * Convert a date into an iso 8601 datetime (no time, just up to day, e.g. 2021-03-15)
+	 * Convert a date into a formatted date string ready for query.
 	 *
 	 * @param string $value Date value passed in shortcode attributes.
+	 * @param bool   $is_wpapi Is this for a WP API (Core) request. Default to false.
 	 */
-	public static function jeherve_post_embed_convert_date( $value ) {
+	public static function jeherve_post_embed_convert_date( $value, $is_wpapi = false ) {
+		/*
+		 * The WordPress.com REST API expects 2021-03-15,
+		 * the core API expects some variant RFC3339 format.
+		 *
+		 * Core's implementation seems really fragile and may break / change in the future,
+		 * since rest_parse_date, which validates the date, does not validate against the RFC3339 standard
+		 * but instead has its own regex that may change.
+		 *
+		 * More about this:
+		 * https://core.trac.wordpress.org/ticket/51945
+		 * https://core.trac.wordpress.org/ticket/41032
+		 */
+		$date_format = $is_wpapi ? 'Y-m-d\TH:i:s' : 'Y-m-d';
+
 		if ( ! empty( $value ) ) {
-			return gmdate( 'Y-m-d', strtotime( $value ) );
+			return gmdate( $date_format, strtotime( $value ) );
 		} else {
 			return;
 		}
