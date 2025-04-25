@@ -603,7 +603,8 @@ class Jeherve_Post_Embeds {
 		}
 
 		// Look for data in our transient. If nothing, let's get a list of posts to display.
-		$cached_featured = get_transient( 'jeherve_post_embed_featured_' . $featured_id . '_' . $featured_query_hash );
+		$transient_name = 'jeherve_post_embed_featured_' . $featured_id . '_' . $featured_query_hash;
+		$cached_featured = get_transient( $transient_name );
 		if ( false === $cached_featured ) {
 			$featured_response = wp_remote_retrieve_body(
 				wp_remote_get( esc_url_raw( $featured_query_url ) )
@@ -618,7 +619,7 @@ class Jeherve_Post_Embeds {
 			 */
 			$featured_img_caching = apply_filters( 'jeherve_post_embed_featured_cache', 10 * HOUR_IN_SECONDS );
 
-			set_transient( 'jeherve_post_embed_featured_' . $featured_id . '_' . $featured_query_hash, $featured_response, $featured_img_caching );
+			set_transient( $transient_name, $featured_response, $featured_img_caching );
 		} else {
 			$featured_response = $cached_featured;
 		}
