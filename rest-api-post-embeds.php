@@ -618,7 +618,7 @@ class Jeherve_Post_Embeds {
 			 */
 			$featured_img_caching = apply_filters( 'jeherve_post_embed_featured_cache', 10 * HOUR_IN_SECONDS );
 
-			set_transient( 'jeherve_post_embed_' . $featured_id . '_' . $featured_query_hash, $featured_response, $featured_img_caching );
+			set_transient( 'jeherve_post_embed_featured_' . $featured_id . '_' . $featured_query_hash, $featured_response, $featured_img_caching );
 		} else {
 			$featured_response = $cached_featured;
 		}

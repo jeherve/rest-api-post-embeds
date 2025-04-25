@@ -3,7 +3,7 @@ Contributors: jeherve
 Tags: shortcode, embed, posts, jetpack, api, wp api, rest api
 Stable tag: 1.5.0
 Requires at least: 5.6
-Tested up to: 6.2
+Tested up to: 6.8
 
 Embed posts from your site or others' into your posts and pages.
 
