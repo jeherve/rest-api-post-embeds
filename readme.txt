@@ -1,6 +1,6 @@
 === REST API Post Embeds ===
 Contributors: jeherve
-Tags: shortcode, embed, posts, jetpack, api, wp api, rest api
+Tags: shortcode, embed, posts, jetpack, api
 Stable tag: 1.5.1
 Requires at least: 5.6
 Tested up to: 6.8
