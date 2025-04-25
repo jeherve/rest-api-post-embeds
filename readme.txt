@@ -143,7 +143,7 @@ Yes! The plugin includes quite a few filters you can use to customize the post l
 = 1.5.1 =
 Release Date: April 25, 2025
 
-* Featured Image: avoid caching issues with featured image data.
+* Featured Image: avoid caching issues with featured image data. Props [@dalacost](https://github.com/dalacost).
 
 = 1.5.0 =
 Release Date: March 15, 2021
