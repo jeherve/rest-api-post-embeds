@@ -4,7 +4,7 @@
  * Plugin URI: https://wordpress.org/plugins/rest-api-post-embeds
  * Description: Embed posts from your site or others' into your posts and pages.
  * Author: Jeremy Herve
- * Version: 1.5.1
+ * Version: 1.5.2
  * Author URI: https://jeremy.hu
  * License: GPL2+
  * Text Domain: rest-api-post-embeds
@@ -358,17 +358,15 @@ class Jeherve_Post_Embeds {
 				// Get the Featured Image URL from the Featured Image ID.
 				$featured_image_url = $this->get_wpapi_featured_image( $post->featured_media, $atts );
 
-				if ( empty( $featured_image_url ) ) {
-					continue;
+				if ( ! empty( $featured_image_url ) ) {
+					$article .= sprintf(
+						'<div class="post-embed-post-thumbnail"><a title="%1$s" href="%2$s"><img src="%3$s" alt="%1$s"/></a></div>',
+						esc_attr( $post_title ),
+						esc_url( $post->link ),
+						/** This filter is documented in rest-api-post-embeds.php */
+						apply_filters( 'jeherve_post_embed_featured_image', esc_url( $featured_image_url ), $atts )
+					);
 				}
-
-				$article .= sprintf(
-					'<div class="post-embed-post-thumbnail"><a title="%1$s" href="%2$s"><img src="%3$s" alt="%1$s"/></a></div>',
-					esc_attr( $post_title ),
-					esc_url( $post->link ),
-					/** This filter is documented in rest-api-post-embeds.php */
-					apply_filters( 'jeherve_post_embed_featured_image', esc_url( $featured_image_url ), $atts )
-				);
 			}
 
 			// Excerpt.
@@ -573,7 +571,7 @@ class Jeherve_Post_Embeds {
 	 */
 	public function get_wpapi_featured_image( $featured_id, $atts ) {
 		if ( ! $atts || ! $featured_id ) {
-			return;
+			return '';
 		}
 
 		/** This filter is documented in rest-api-post-embeds.php */
@@ -586,7 +584,7 @@ class Jeherve_Post_Embeds {
 
 		// If no post ID, let's stop right there.
 		if ( ! $blog_id ) {
-			return;
+			return '';
 		}
 
 		$featured_query_url = sprintf(
@@ -599,7 +597,7 @@ class Jeherve_Post_Embeds {
 		if ( $featured_query_url ) {
 			$featured_query_hash = substr( md5( $featured_query_url ), 0, 21 );
 		} else {
-			return;
+			return '';
 		}
 
 		// Look for data in our transient. If nothing, let's get a list of posts to display.
@@ -626,9 +624,9 @@ class Jeherve_Post_Embeds {
 
 		if ( ! is_wp_error( $featured_response )  ) {
 			$featured_info = json_decode( $featured_response, true );
-			$featured_url = $featured_info['guid']['rendered'];
+			$featured_url = $featured_info['source_url'];
 		} else {
-			return;
+			return '';
 		}
 
 		return $featured_url;
